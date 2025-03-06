@@ -4,8 +4,9 @@
 This repository is still under development.
 
 ## Basic pre-requisits 
-React.js
-Node.js
+React.js,
+Node.js,
+Code Editor IDE
 
 ## Getting started
 
@@ -29,6 +30,13 @@ Node.js
      ```bash
      cd Nexinbe_cafe_app
      ```
-4. **Start Contributing**:
+
+3. **Open the project in Vs-Code**:
+   - Run the command
+   ```bash
+   npm install
+   npm run dev
+     ```
+5. **Start Contributing**:
      ## Screenshots
 ![{736AE551-8FEC-4EC5-8261-CFA0EA738D53}](https://github.com/user-attachments/assets/8e78d2f1-36a3-42c2-ae06-e8319833758e)
