@@ -6,6 +6,7 @@ This repository is still under development.
 ## Basic pre-requisits 
 React.js,
 Node.js,
+Git bash,
 Code Editor IDE
 
 ## Getting started
