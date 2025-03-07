@@ -5,7 +5,7 @@ const Navbar = () => {
     <nav className="p-4 bg-gray-800 text-white flex justify-between items-center">
       <h1 className="text-xl font-bold">Cafe</h1>
       <div className="space-x-4">
-        <Link to="/" className="mx-2">Home</Link>
+        <Link to="/home" className="mx-2">Home</Link>
         <Link to="/menu" className="mx-2">Menu</Link>
         <Link to="/cart" className="mx-2">Cart</Link>
         <Link to="/order-tracking" className="mx-2">Track Order</Link>
