@@ -9,9 +9,9 @@ const app = express();
 // Middleware for JSON parsing
 app.use(express.json());
 
-// Configure CORS for GitHub Pages
+// Configure CORS for local development and GitHub Pages
 const corsOptions = {
-  origin: ["https://ravichandrals507.github.io"], // Allow only GitHub Pages frontend
+  origin: ["https://ravichandrals507.github.io/Nexinbe_cafe_app"], // Allow local and GitHub Pages frontend
   methods: "GET,POST,PUT,DELETE",
   credentials: true, // Allow cookies and authorization headers
 };
@@ -34,11 +34,6 @@ app.get("/", (req, res) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-
-
-
-
-
 
 
 
