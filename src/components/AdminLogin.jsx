@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 const AdminLogin = () => {
   const [formData, setFormData] = useState({ name: "", password: "" });
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -13,6 +14,7 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     try {
       const response = await fetch("http://localhost:5000/api/admin/login", {
@@ -24,24 +26,27 @@ const AdminLogin = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        throw new Error(data.error || "Login failed");
       }
 
       localStorage.setItem("adminToken", data.token);
       navigate("/admin-dashboard");
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div 
+    <div
       className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
       style={{
-        backgroundImage: "url('https://s.yimg.com/uu/api/res/1.2/kzhpTHJTqgFCN1aFKaHN4Q--~B/aD0zNjgwO3c9NTUyMDtzbT0xO2FwcGlkPXl0YWNoeW9u/https://img.huffingtonpost.com/asset/5ce9c6192100006d0c80b350.jpeg')",
+        backgroundImage:
+          "url('https://s.yimg.com/uu/api/res/1.2/kzhpTHJTqgFCN1aFKaHN4Q--~B/aD0zNjgwO3c9NTUyMDtzbT0xO2FwcGlkPXl0YWNoeW9u/https://img.huffingtonpost.com/asset/5ce9c6192100006d0c80b350.jpeg')",
       }}
     >
-      {/* Dark Overlay for better text visibility */}
+      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black opacity-50"></div>
 
       <div className="relative bg-white p-8 rounded-lg shadow-lg w-96">
@@ -68,8 +73,12 @@ const AdminLogin = () => {
             className="w-full p-2 border rounded-lg"
             required
           />
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg cursor-pointer">
-            Login
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>

@@ -42,30 +42,60 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const multer = require("multer");
 const adminRoutes = require("./routes/adminRoutes");
+const menuRoutes = require("./routes/menuRoutes");
 
 const app = express();
+const upload = multer(); // Initialize Multer
 
-// Middleware for JSON parsing
-app.use(express.json());
-
-// Enable CORS globally (allowing access from any domain)
+// 🔹 Enable CORS
 app.use(cors({ origin: "*", methods: "GET,POST,PUT,DELETE", credentials: true }));
 
-// Connect to MongoDB
+// 🔹 Middleware (Correct Order)
+app.use(express.urlencoded({ extended: true })); // Handles URL-encoded data
+app.use(express.json()); // Handles JSON data
+
+// 🔹 Route Setup
+app.use("/api/admin", adminRoutes);  
+app.use("/api/menu", menuRoutes);  // No multer here, handle in routes
+
+// 🔹 MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error(" MongoDB connection error:", err));
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// Routes
-app.use("/api/admin", adminRoutes);
-
-// Default route
+// 🔹 Default Route
 app.get("/", (req, res) => {
-  res.send("Backend is running...");
+  res.send("🚀 Backend is running...");
 });
 
-// Start server
+// 🔹 Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+
+
+
+
+// const express = require("express");
+// const cors = require("cors");
+// const mongoose = require("mongoose");
+// require("dotenv").config();
+
+// const adminRoutes = require("./routes/adminRoutes"); // Admin routes
+// const menuRoutes = require("./routes/menuRoutes"); // Menu routes
+
+// const app = express();
+// app.use(express.json());
+// app.use(cors());
+
+// // Use routes
+// app.use("/api/admin", adminRoutes); // Admin endpoints
+// app.use("/api", menuRoutes); // Menu endpoints
+
+// const PORT = process.env.PORT || 5000;
+// mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`)))
+//   .catch((error) => console.log(error));
