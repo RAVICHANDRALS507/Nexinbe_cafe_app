@@ -46,10 +46,10 @@ const Admin = require("../models/Admin");
 const bcrypt = require("bcryptjs");
 
 exports.adminLogin = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, password } = req.body; // ✅ Change 'email' to 'name'
 
   try {
-    const admin = await Admin.findOne({ email });
+    const admin = await Admin.findOne({ name });
     if (!admin) return res.status(400).json({ error: "Admin not found" });
 
     const isMatch = await bcrypt.compare(password, admin.password);

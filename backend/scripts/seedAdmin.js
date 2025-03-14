@@ -1,6 +1,6 @@
+require("dotenv").config({ path: "../.env" });
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-require("dotenv").config();
 const Admin = require("../models/Admin");
 
 const addAdmin = async () => {
@@ -9,7 +9,7 @@ const addAdmin = async () => {
     await mongoose.connect(process.env.MONGO_URI);
 
     // ✅ Check if admin already exists
-    const existingAdmin = await Admin.findOne({ name: "vinay" });
+    const existingAdmin = await Admin.findOne({ name: "Admin" });
     if (existingAdmin) {
       console.log("⚠️ Admin already exists in the database.");
       mongoose.connection.close();
@@ -17,11 +17,11 @@ const addAdmin = async () => {
     }
 
     // ✅ Hash password securely
-    const hashedPassword = await bcrypt.hash("admin123", 10);
+    const hashedPassword = await bcrypt.hash("admin", 10);
 
     // ✅ Insert Admin
     await Admin.create({
-      name: "vinay",
+      name: "Admin",
       password: hashedPassword,
     });
 
