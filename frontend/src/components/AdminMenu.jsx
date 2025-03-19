@@ -43,7 +43,8 @@ const AdminMenu = () => {
     formData.append("image", image);
 
     try {
-      const response = await fetch("http://localhost:5000/api/menu/add", {
+      // const response = await fetch("http://localhost:5000/api/menu/add", {
+      const response = await fetch("https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app/api/menu/add", {
         method: "POST",
         body: formData,
       });
