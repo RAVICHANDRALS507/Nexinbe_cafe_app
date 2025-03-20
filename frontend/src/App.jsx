@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
-import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import Menu from "./components/Menu";
-import Cart from "./components/Cart";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
-import AdminLogin from "./components/AdminLogin";
-import AdminPanel from "./components/AdminPanel";
+import Navbar from "./components/User/Navbar";
+import Home from "./components/User/Home";
+import Menu from "./components/User/Menu";
+import Cart from "./components/User/Cart";
+import Signup from "./components/User/Signup";
+import Login from "./components/User/Login";
+import AdminLogin from "./components/Admin/AdminLogin";
+import AdminPanel from "./components/Admin/AdminPanel";
 
 function App() {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
