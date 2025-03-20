@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/Cartslice";
+import { addToCart } from "../../redux/Cartslice";
 import { useState } from "react";
 
 const initialMenuItems = [
