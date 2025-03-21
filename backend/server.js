@@ -51,7 +51,7 @@ const upload = multer(); // Initialize Multer
 
 // 🔹 Enable CORS
 app.use(cors({ origin: ["*","https://nexinbe-cafe-app-s1a1.vercel.app/"],  methods: "GET,POST,PUT,DELETE", credentials: true }));
-
+//app.use(cors({ origin: "*",  methods: "GET,POST,PUT,DELETE", credentials: true }));
 // 🔹 Middleware (Correct Order)
 app.use(express.urlencoded({ extended: true })); // Handles URL-encoded data
 app.use(express.json()); // Handles JSON data
