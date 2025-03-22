@@ -94,18 +94,19 @@ const MenuItem = require("../models/MenuItem");
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-// ✅ GET: Fetch all menu items
 router.get("/", async (req, res) => {
   try {
-    const menuItems = await MenuItem.find();
-    res.json(menuItems);
+    const menuItems = await MenuItem.find(); // Fetching from MongoDB
+    console.log("Fetched menu items from DB:", menuItems); // Log to check if the database is being queried
+    res.json(menuItems); // Sending data as JSON response
   } catch (error) {
     console.error("Error fetching menu items:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-// ✅ POST: Add new menu item
+
+// Route to add a menu item (for admin use)
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
     const { name, price, description, category } = req.body;
@@ -116,10 +117,10 @@ router.post("/add", upload.single("image"), async (req, res) => {
 
     const newItem = new MenuItem({
       name,
-      price: parseFloat(price), // Ensure price is stored as a number
+      price: parseFloat(price),
       description,
       category,
-      image: `data:image/jpeg;base64,${req.file.buffer.toString("base64")}`, // Store image in Base64 format
+      image: `data:image/jpeg;base64,${req.file.buffer.toString("base64")}`, // Handle image
     });
 
     await newItem.save();

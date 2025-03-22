@@ -31,7 +31,7 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/admin-login" element={<AdminLogin onLogin={handleAdminLogin} />} />
         <Route path="/admin-panel" element={<PrivateRoute element={<AdminPanel />} />} />
         <Route path="/admin-dashboard" element={<AdminPanel />} />

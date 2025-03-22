@@ -46,18 +46,8 @@ const Signup = () => {
         </form>
 
         <p className="mt-4 text-center">
-          Already have an account? <Link to="/login" className="text-blue-500">Login</Link>
+          Already have an account? <Link to="/admin-login" className="text-blue-500">Login</Link>
         </p>
-
-        <div className="mt-4">
-          <button 
-            onClick={handleGoogleSignup} 
-            className="w-full flex items-center justify-center bg-red-500 text-white py-2 rounded-lg">
-            <img src="https://imagepng.org/wp-content/uploads/2019/08/google-icon-480x432.png" 
-                 alt="Google Logo" className="w-5 h-5 mr-2" />
-            Sign up with Google
-          </button>
-        </div>
       </div>
     </div>
   );

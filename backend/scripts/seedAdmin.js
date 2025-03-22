@@ -9,7 +9,7 @@ const addAdmin = async () => {
     await mongoose.connect(process.env.MONGO_URI);
 
     // ✅ Check if admin already exists
-    const existingAdmin = await Admin.findOne({ name: "Admin" });
+    const existingAdmin = await Admin.findOne({ name: "123" });
     if (existingAdmin) {
       console.log("⚠️ Admin already exists in the database.");
       mongoose.connection.close();
@@ -17,11 +17,11 @@ const addAdmin = async () => {
     }
 
     // ✅ Hash password securely
-    const hashedPassword = await bcrypt.hash("admin", 10);
+    const hashedPassword = await bcrypt.hash("123", 10);
 
     // ✅ Insert Admin
     await Admin.create({
-      name: "Admin",
+      name: "123",
       password: hashedPassword,
     });
 
