@@ -18,7 +18,7 @@ const menuItemSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   description: { type: String, required: true },
   category: { type: String, required: true },
-  image: { type: String, required: true }, // Stored as Base64
+  image: { type: String, required: true }, // Stored as Base64 encoded string
 });
 
-module.exports = mongoose.model("MenuItem", menuItemSchema);
+module.exports = mongoose.model("MenuItem", menuItemSchema); // Model export
