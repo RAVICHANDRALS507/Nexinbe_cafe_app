@@ -44,19 +44,48 @@
 
 const Admin = require("../models/Admin");
 const bcrypt = require("bcryptjs");
+const User = require("../models/User");
 
+// ✅ Admin Login
 exports.adminLogin = async (req, res) => {
-  const { name, password } = req.body; // ✅ Change 'email' to 'name'
+  const { name, password } = req.body;
 
   try {
+    // 🔍 Check if admin exists by name
     const admin = await Admin.findOne({ name });
-    if (!admin) return res.status(400).json({ error: "Admin not found" });
+    if (!admin) {
+      return res.status(400).json({ error: "Admin not found" });
+    }
 
+    // 🔐 Validate password
     const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) return res.status(400).json({ error: "Invalid password" });
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid password" });
+    }
 
+    // ✅ Return success message
     res.status(200).json({ message: "Login successful!" });
   } catch (error) {
+    console.error("❌ Error during admin login:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// ✅ Get User & Admin Stats
+exports.getUserStats = async (req, res) => {
+  try {
+    // 📊 Count registered users
+    const userCount = await User.countDocuments();
+    // 👨‍💼 Count existing admins
+    const adminCount = await Admin.countDocuments();
+
+    // ✅ Return stats
+    res.status(200).json({
+      users: userCount,
+      admins: adminCount,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching user stats:", error);
     res.status(500).json({ error: "Server error" });
   }
 };

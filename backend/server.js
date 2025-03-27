@@ -45,6 +45,7 @@ const cors = require("cors");
 const multer = require("multer");
 const adminRoutes = require("./routes/adminRoutes");
 const menuRoutes = require("./routes/menuRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 const upload = multer(); // Initialize Multer
@@ -63,6 +64,7 @@ app.use(express.json()); // Handles JSON data
 
 // 🔹 Route Setup
 app.use("/api/admin", adminRoutes);  
+app.use("/api/auth",userRoutes);  // No multer here, handle in routes
 app.use("/api/menu", menuRoutes);  // No multer here, handle in routes
 
 // 🔹 MongoDB Connection

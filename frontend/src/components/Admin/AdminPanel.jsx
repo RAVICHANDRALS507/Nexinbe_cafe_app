@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import AdminOrders from "./AdminOrders";
 import AdminMenu from "./AdminMenu";
+import AdminDashboard from "./AdminDashboard";
 
 const AdminPanel = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -71,12 +72,13 @@ const AdminPanel = ({ onLogout }) => {
 
           {/* Render Sections */}
           <div className="border p-4 rounded-lg shadow bg-white">
-            {activeSection === "dashboard" && (
+            {/* {activeSection === "dashboard" && (
               <div>
                 <h3 className="text-xl font-bold">Dashboard Overview</h3>
                 <p>Welcome, Admin! Manage your cafe from here.</p>
               </div>
-            )}
+            )} */}
+            {activeSection === "dashboard" && <AdminDashboard />}
             {activeSection === "orders" && <AdminOrders />}
             {activeSection === "menu" && <AdminMenu />}
           </div>
