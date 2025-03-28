@@ -1,17 +1,5 @@
-// const express = require("express");
-// const { adminLogin, getUserStats } = require("../controllers/adminController");
-
-// const router = express.Router();
-
-// // ✅ Admin Login
-// router.post("/login", adminLogin);
-
-// // ✅ Get User & Admin Stats
-// router.get("/dashboard", getUserStats);
-
-// module.exports = router;
-
 const express = require('express');
+const bcrypt = require('bcryptjs'); // Add this import
 const Admin = require('../models/Admin');
 const { adminLogin, getUserStats } = require("../controllers/adminController");
 const router = express.Router();
@@ -52,14 +40,75 @@ router.post('/add', async (req, res) => {
   }
 });
 
-// ✅ Route to get all admins
+// Update the existing update route to handle password updates
+router.put('/update/:id', async (req, res) => {
+  try {
+    const { name, password } = req.body;
+    let updateData = { name };
+
+    // Only update password if it's provided
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
+
+    const admin = await Admin.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    res.status(200).json({ message: 'Admin updated successfully' });
+  } catch (error) {
+    console.error('Error updating admin:', error);
+    res.status(500).json({ message: 'Failed to update admin' });
+  }
+});
+
+// Delete admin route
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    const admin = await Admin.findByIdAndDelete(req.params.id);
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+    res.status(200).json({ message: 'Admin deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting admin:', error);
+    res.status(500).json({ message: 'Failed to delete admin' });
+  }
+});
+
+// Update the existing admins route to include _id
 router.get('/admins', async (req, res) => {
   try {
-    const admins = await Admin.find(); // Fetch all admins from the database
-    res.status(200).json(admins); // Return the list of admins
+    const admins = await Admin.find().select('_id name createdAtDate createdAtTime');
+    res.status(200).json(admins);
   } catch (error) {
     console.error('Error fetching admins:', error);
-    return res.status(500).json({ message: 'Failed to load admins.' });
+    res.status(500).json({ message: 'Failed to load admins.' });
+  }
+});
+
+// Add this new route for password verification
+router.post('/verify-password', async (req, res) => {
+  try {
+    const { adminId, currentPassword } = req.body;
+    const admin = await Admin.findById(adminId);
+    
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    const isValid = await admin.comparePassword(currentPassword);
+    res.json({ isValid });
+  } catch (error) {
+    console.error('Error verifying password:', error);
+    res.status(500).json({ message: 'Failed to verify password' });
   }
 });
 
