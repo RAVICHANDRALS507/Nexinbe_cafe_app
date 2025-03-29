@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Navbar from "./Navbar"; // Add this import
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -50,51 +51,55 @@ const Login = () => {
   };
 
   return (
-    <div 
-      className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
-      style={{
-        backgroundImage: "url('https://s.yimg.com/uu/api/res/1.2/kzhpTHJTqgFCN1aFKaHN4Q--~B/aD0zNjgwO3c9NTUyMDtzbT0xO2FwcGlkPXl0YWNoeW9u/https://img.huffingtonpost.com/asset/5ce9c6192100006d0c80b350.jpeg')",
-      }}
-    >
-      {/* Dark Overlay for better text visibility */}
-      <div className="absolute inset-0 bg-black opacity-50"></div>
+    <>
+      <Navbar />
+      <div 
+        className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://s.yimg.com/uu/api/res/1.2/kzhpTHJTqgFCN1aFKaHN4Q--~B/aD0zNjgwO3c9NTUyMDtzbT0xO2FwcGlkPXl0YWNoeW9u/https://img.huffingtonpost.com/asset/5ce9c6192100006d0c80b350.jpeg')",
+          paddingTop: '10rem', // Adjust padding to avoid overlap with Navbar
+        }}
+      >
+        {/* Dark Overlay for better text visibility */}
+        <div className="absolute inset-0 bg-black opacity-50"></div>
 
-      <div className="relative bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold text-center mb-6">User Login</h2>
+        <div className="relative bg-white p-8 rounded-lg shadow-lg w-96">
+          <h2 className="text-2xl font-bold text-center mb-6">User Login</h2>
 
-        {/* ✅ Show Success or Error Messages */}
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        {success && <p className="text-green-500 text-center mb-4">{success}</p>}
+          {/* ✅ Show Success or Error Messages */}
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+          {success && <p className="text-green-500 text-center mb-4">{success}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input 
-            type="email" 
-            name="email" 
-            placeholder="Email" 
-            value={formData.email} 
-            onChange={handleChange}
-            className="w-full p-2 border rounded-lg" 
-            required 
-          />
-          <input 
-            type="password" 
-            name="password" 
-            placeholder="Password" 
-            value={formData.password} 
-            onChange={handleChange}
-            className="w-full p-2 border rounded-lg" 
-            required 
-          />
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg">
-            Login
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input 
+              type="email" 
+              name="email" 
+              placeholder="Email" 
+              value={formData.email} 
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg" 
+              required 
+            />
+            <input 
+              type="password" 
+              name="password" 
+              placeholder="Password" 
+              value={formData.password} 
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg" 
+              required 
+            />
+            <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg">
+              Login
+            </button>
+          </form>
 
-        <p className="mt-4 text-center">
-          Don't have an account? <Link to="/signup" className="text-blue-500">Sign Up</Link>
-        </p>
+          <p className="mt-4 text-center">
+            Don't have an account? <Link to="/signup" className="text-blue-500">Sign Up</Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

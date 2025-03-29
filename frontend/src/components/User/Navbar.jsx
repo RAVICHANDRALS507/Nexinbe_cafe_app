@@ -8,7 +8,7 @@ const Navbar = () => {
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <nav className="p-4 bg-gray-800 text-white">
+    <nav className="p-4 bg-gray-800 text-white fixed w-full top-0 z-50">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-bold">Cafe</h1>
 

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaUsers, FaUserShield } from "react-icons/fa";
+import { FaUsers, FaUserShield, FaBoxes, FaPlusCircle, FaTrash, FaEdit, FaTimes } from "react-icons/fa";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // ✅ Backend API URL
 const API_BASE_URL = "http://localhost:5000";
@@ -22,6 +24,16 @@ const AdminDashboard = () => {
   const [editPassword, setEditPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [showStock, setShowStock] = useState(false);
+  const [stockList, setStockList] = useState([]);
+  const [editingStock, setEditingStock] = useState(null);
+  const [editStock, setEditStock] = useState({
+    name: "",
+    category: "",
+    price: 0,
+    quantity: 0,
+    unit: "units",
+  });
 
   // ✅ Fetch user and admin stats on component mount
   useEffect(() => {
@@ -71,17 +83,13 @@ const AdminDashboard = () => {
       console.log("Sending Payload:", payload);
 
       const response = await axios.post(`${API_BASE_URL}/api/admin/add`, payload);
-
-      // Handle successful admin addition
-      console.log("Admin added:", response.data);
+      toast.success('Admin added successfully!');
       setShowForm(false);
       setUsername("");
       setPassword("");
-      setError(""); // Clear any error message if admin added successfully
     } catch (err) {
-      // More detailed error logging
       console.error("❌ Error adding admin:", err.response ? err.response.data : err.message);
-      setError("Failed to add new admin.");
+      toast.error("❌ Error adding admin:", err.response ? err.response.data : err.message);
     }
   };
 
@@ -145,16 +153,16 @@ const AdminDashboard = () => {
       );
 
       if (response.data.message) {
+        toast.success('Admin updated successfully!');
         setEditingAdmin(null);
         setShowPasswordFields(false);
         setCurrentPassword('');
         setEditPassword('');
         handleShowAdmins(); // Refresh admin list
-        setError(''); // Clear any existing errors
       }
     } catch (error) {
       console.error('Error updating admin:', error);
-      setError(error.response?.data?.message || 'Failed to update admin. Please try again.');
+      toast.error(error.response?.data?.message || 'Failed to update admin');
     }
   };
 
@@ -162,248 +170,503 @@ const AdminDashboard = () => {
     if (window.confirm('Are you sure you want to delete this admin?')) {
       try {
         await axios.delete(`${API_BASE_URL}/api/admin/delete/${adminId}`);
+        toast.success('Admin deleted successfully!');
         // Refresh admin list
         handleShowAdmins();
       } catch (error) {
         console.error('Error deleting admin:', error);
-        setError('Failed to delete admin');
+        toast.error('Failed to delete admin');
       }
     }
   };
 
+  const handleViewStock = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/menu`);
+      setStockList(response.data);
+      setShowStock(true);
+    } catch (error) {
+      console.error('Error fetching menu items:', error);
+      setError('Failed to load menu items');
+    }
+  };
+
+  const deleteStockItem = async (id) => {
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      try {
+        await axios.delete(`${API_BASE_URL}/api/stock/delete/${id}`);
+        toast.success('Stock item deleted successfully!');
+        handleViewStock(); // Refresh stock list
+      } catch (error) {
+        console.error("❌ Error deleting stock item:", error);
+        toast.error("Failed to delete stock item");
+      }
+    }
+  };
+
+  const handleUpdateStock = (item) => {
+    setEditingStock(item);
+    setEditStock({
+      name: item.name,
+      category: item.category,
+      price: item.price,
+      quantity: item.quantity,
+      unit: item.unit,
+    });
+  };
+
+  const handleSaveStockUpdate = async () => {
+    try {
+      await axios.put(`${API_BASE_URL}/api/menu/${editingStock._id}`, editStock);
+      toast.success('Menu item updated successfully!');
+      setEditingStock(null);
+      handleViewStock(); // Refresh list
+    } catch (error) {
+      console.error('Error updating menu item:', error);
+      toast.error('Failed to update menu item');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      {/* ✅ Dashboard Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-        {/* 📊 Registered Users */}
-        <div className="bg-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 cursor-pointer">
-          <div className="flex items-center space-x-4">
-            <FaUsers className="text-4xl text-blue-500" />
-            <div>
-              <h2 className="text-xl font-semibold text-gray-700">
-                Registered Users
-              </h2>
-              {loading ? (
-                <p className="text-gray-500">Loading...</p>
-              ) : (
-                <p className="text-2xl font-bold text-gray-900">{stats.users}</p>
-              )}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      {/* Dashboard Header */}
+      <div className="max-w-7xl mx-auto mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
+        <p className="text-gray-600">Manage your cafe's users, admins, and inventory</p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-8">
+        {/* Users Card */}
+        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6">
+          <div className="flex items-center">
+            <div className="p-3 bg-blue-100 rounded-lg">
+              <FaUsers className="text-3xl text-blue-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm text-gray-500">Registered Users</p>
+              <h3 className="text-2xl font-bold text-gray-800">
+                {loading ? (
+                  <div className="animate-pulse h-8 w-16 bg-gray-200 rounded" />
+                ) : (
+                  stats.users
+                )}
+              </h3>
             </div>
           </div>
         </div>
 
-        {/* 👨‍💼 Existing Admins */}
-        <div className="bg-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 cursor-pointer">
-          <div className="flex items-center space-x-4">
-            <FaUserShield className="text-4xl text-red-500" />
-            <div>
-              <h2 className="text-xl font-semibold text-gray-700">
-                Existing Admins
-              </h2>
-              {loading ? (
-                <p className="text-gray-500">Loading...</p>
-              ) : (
-                <p className="text-2xl font-bold text-gray-900">{stats.admins}</p>
-              )}
+        {/* Admins Card */}
+        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6">
+          <div className="flex items-center mb-4">
+            <div className="p-3 bg-purple-100 rounded-lg">
+              <FaUserShield className="text-3xl text-purple-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm text-gray-500">Existing Admins</p>
+              <h3 className="text-2xl font-bold text-gray-800">
+                {loading ? (
+                  <div className="animate-pulse h-8 w-16 bg-gray-200 rounded" />
+                ) : (
+                  stats.admins
+                )}
+              </h3>
             </div>
           </div>
-
-          {/* Buttons for Add New Admin and Show Existing Admins */}
-          <div className="mt-4 flex space-x-4">
+          <div className="grid grid-cols-2 gap-3">
             <button
               onClick={handleAddAdmin}
-              className="w-1/2 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-all duration-300"
+              className="flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
             >
-              Add New Admin
+              <FaPlusCircle className="mr-2" /> Add Admin
             </button>
             <button
               onClick={handleShowAdmins}
-              className="w-1/2 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-all duration-300"
+              className="flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
             >
-              Show Existing Admins
+              <FaUsers className="mr-2" /> View All
+            </button>
+          </div>
+        </div>
+
+        {/* Stock Card */}
+        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6">
+          <div className="flex items-center mb-4">
+            <div className="p-3 bg-orange-100 rounded-lg">
+              <FaBoxes className="text-3xl text-orange-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm text-gray-500">Stock Management</p>
+              <h3 className="text-2xl font-bold text-gray-800">Inventory</h3>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-3">
+            <button
+              onClick={handleViewStock}
+              className="flex items-center justify-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+            >
+              <FaBoxes className="mr-2" /> View Stock
             </button>
           </div>
         </div>
       </div>
 
-      {/* Conditionally render the form for adding a new admin */}
+      {/* Modal Backdrop */}
       {showForm && (
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-8">
-          <h3 className="text-xl font-semibold text-gray-700">Add New Admin</h3>
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          {/* Modal Content */}
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => {
+                setShowForm(false);
+              }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <FaTimes className="text-xl" />
+            </button>
+            
+            {/* Form Content */}
             <div>
-              <label htmlFor="username" className="block text-gray-700">
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="w-full p-2 mt-2 border border-gray-300 rounded-md"
-              />
-            </div>
+              <h3 className="text-xl font-semibold text-gray-700">Add New Admin</h3>
+              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                <div>
+                  <label htmlFor="username" className="block text-gray-700">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-md"
+                  />
+                </div>
 
-            <div>
-              <label htmlFor="password" className="block text-gray-700">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full p-2 mt-2 border border-gray-300 rounded-md"
-              />
-            </div>
+                <div>
+                  <label htmlFor="password" className="block text-gray-700">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-md"
+                  />
+                </div>
 
-            <div className="mt-4">
-              <button
-                type="submit"
-                className="w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-600 transition-all duration-300"
-              >
-                Add Admin
-              </button>
+                <div className="mt-4">
+                  <button
+                    type="submit"
+                    className="w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-600 transition-all duration-300"
+                  >
+                    Add Admin
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       )}
 
-      {/* Display List of Admins if Show Admins button is clicked */}
-      {showAdmins && (
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-8">
-          <h3 className="text-xl font-semibold text-gray-700">Admin List</h3>
-          <div className="mt-4">
-            <table className="min-w-full">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Time</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {adminList.length > 0 ? (
-                  adminList.map((admin) => (
-                    <tr key={admin._id}>
-                      {editingAdmin && editingAdmin._id === admin._id ? (
-                        <td className="px-6 py-4">
-                          <div className="space-y-4 max-w-md">
-                            {/* Name Input */}
-                            <div className="flex flex-col">
-                              <label className="text-sm font-medium text-gray-600 mb-1">Name</label>
-                              <input
-                                type="text"
-                                value={editName}
-                                onChange={(e) => setEditName(e.target.value)}
-                                className="border rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Name"
-                              />
-                            </div>
+      {/* Tables Section */}
+      {(showAdmins || showStock) && (
+        <div className="bg-white rounded-xl shadow-md overflow-hidden max-w-7xl mx-auto mt-8">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800">
+              {showAdmins ? 'Admin List' : 'Stock Management'}
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            {/* Existing tables with updated styles */}
+            {showAdmins && (
+              <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-8">
+                <h3 className="text-xl font-semibold text-gray-700">Admin List</h3>
+                <div className="mt-4">
+                  <table className="min-w-full">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Time</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {adminList.length > 0 ? (
+                        adminList.map((admin) => (
+                          <tr key={admin._id}>
+                            {editingAdmin && editingAdmin._id === admin._id ? (
+                              <td className="px-6 py-4">
+                                <div className="space-y-4 max-w-md">
+                                  {/* Name Input */}
+                                  <div className="flex flex-col">
+                                    <label className="text-sm font-medium text-gray-600 mb-1">Name</label>
+                                    <input
+                                      type="text"
+                                      value={editName}
+                                      onChange={(e) => setEditName(e.target.value)}
+                                      className="border rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      placeholder="Name"
+                                    />
+                                  </div>
 
-                            {/* Password Toggle Button */}
-                            <button
-                              onClick={togglePasswordFields}
-                              className="text-blue-600 hover:text-blue-900 text-sm font-medium flex items-center gap-2"
-                            >
-                              {showPasswordFields ? (
-                                <>
-                                  <span>Hide Password Fields</span>
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                </>
-                              ) : (
-                                <>
-                                  <span>Change Password</span>
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                                  </svg>
-                                </>
-                              )}
-                            </button>
-                            
-                            {/* Password Fields */}
-                            {showPasswordFields && (
-                              <div className="space-y-3 border-t pt-3">
-                                <div className="flex flex-col">
-                                  <label className="text-sm font-medium text-gray-600 mb-1">Current Password</label>
-                                  <input
-                                    type="password"
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                    className="border rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter current password"
-                                  />
+                                  {/* Password Toggle Button */}
+                                  <button
+                                    onClick={togglePasswordFields}
+                                    className="text-blue-600 hover:text-blue-900 text-sm font-medium flex items-center gap-2"
+                                  >
+                                    {showPasswordFields ? (
+                                      <>
+                                        <span>Hide Password Fields</span>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <span>Change Password</span>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                      </>
+                                    )}
+                                  </button>
+                                  
+                                  {/* Password Fields */}
+                                  {showPasswordFields && (
+                                    <div className="space-y-3 border-t pt-3">
+                                      <div className="flex flex-col">
+                                        <label className="text-sm font-medium text-gray-600 mb-1">Current Password</label>
+                                        <input
+                                          type="password"
+                                          value={currentPassword}
+                                          onChange={(e) => setCurrentPassword(e.target.value)}
+                                          className="border rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Enter current password"
+                                        />
+                                      </div>
+                                      <div className="flex flex-col">
+                                        <label className="text-sm font-medium text-gray-600 mb-1">New Password</label>
+                                        <input
+                                          type="password"
+                                          value={editPassword}
+                                          onChange={(e) => setEditPassword(e.target.value)}
+                                          className="border rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Enter new password"
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
-                                <div className="flex flex-col">
-                                  <label className="text-sm font-medium text-gray-600 mb-1">New Password</label>
-                                  <input
-                                    type="password"
-                                    value={editPassword}
-                                    onChange={(e) => setEditPassword(e.target.value)}
-                                    className="border rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter new password"
-                                  />
-                                </div>
-                              </div>
+                              </td>
+                            ) : (
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">{admin.name}</div>
+                              </td>
                             )}
-                          </div>
-                        </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500">{admin.createdAtDate}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500">{admin.createdAtTime}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              {editingAdmin && editingAdmin._id === admin._id ? (
+                                <button
+                                  onClick={handleSaveUpdate}
+                                  className="text-green-600 hover:text-green-900 mr-4"
+                                >
+                                  Save
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleUpdate(admin)}
+                                  className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                >
+                                  Update
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleDelete(admin._id)}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
                       ) : (
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{admin.name}</div>
-                        </td>
+                        <tr>
+                          <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                            No admins found
+                          </td>
+                        </tr>
                       )}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{admin.createdAtDate}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{admin.createdAtTime}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        {editingAdmin && editingAdmin._id === admin._id ? (
-                          <button
-                            onClick={handleSaveUpdate}
-                            className="text-green-600 hover:text-green-900 mr-4"
-                          >
-                            Save
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleUpdate(admin)}
-                            className="text-indigo-600 hover:text-indigo-900 mr-4"
-                          >
-                            Update
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleDelete(admin._id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
-                      No admins found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+{showStock && (
+  <div className="p-6">
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {stockList.length > 0 ? (
+            stockList.map((item) => (
+              <tr key={item._id}>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {editingStock && editingStock._id === item._id ? (
+                    <input
+                      type="text"
+                      value={editStock.name}
+                      onChange={(e) => setEditStock({ ...editStock, name: e.target.value })}
+                      className="border rounded-md px-3 py-1 w-full"
+                    />
+                  ) : (
+                    <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {editingStock && editingStock._id === item._id ? (
+                    <select
+                      value={editStock.category}
+                      onChange={(e) => setEditStock({ ...editStock, category: e.target.value })}
+                      className="border rounded-md px-3 py-1 w-full"
+                    >
+                      <option value="" disabled>Select Category</option>
+                      <option value="Drinks">Drinks</option>
+                      <option value="Food">Food</option>
+                      <option value="Desserts">Desserts</option>
+                      <option value="Others">Others</option>
+                    </select>
+                  ) : (
+                    <div className="text-sm text-gray-500">{item.category}</div>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {editingStock && editingStock._id === item._id ? (
+                    <input
+                      type="number"
+                      value={editStock.price}
+                      onChange={(e) => setEditStock({ ...editStock, price: Number(e.target.value) })}
+                      className="border rounded-md px-3 py-1 w-full"
+                    />
+                  ) : (
+                    <div className="text-sm text-gray-500">₹{item.price}</div>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {editingStock && editingStock._id === item._id ? (
+                    <input
+                      type="number"
+                      value={editStock.quantity}
+                      onChange={(e) => setEditStock({ ...editStock, quantity: Number(e.target.value) })}
+                      className="border rounded-md px-3 py-1 w-full"
+                    />
+                  ) : (
+                    <div className="text-sm text-gray-500">{item.quantity}</div>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {editingStock && editingStock._id === item._id ? (
+                    <select
+                      value={editStock.unit}
+                      onChange={(e) => setEditStock({ ...editStock, unit: e.target.value })}
+                      className="border rounded-md px-3 py-1 w-full"
+                    >
+                      <option value="" disabled>Select Category</option>
+                      <option value="kg">kg</option>
+                      <option value="Liters">Liters</option>
+                      <option value="Units">Units</option>
+                      <option value="pcs">pcs</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  ) : (
+                    <div className="text-sm text-gray-500">{item.unit}</div>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                  {editingStock && editingStock._id === item._id ? (
+                    <>
+                      <button
+                        onClick={handleSaveStockUpdate}
+                        className="text-green-600 hover:text-green-900"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingStock(null)}
+                        className="text-gray-600 hover:text-gray-900"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleUpdateStock(item)}
+                        className="text-blue-600 hover:text-blue-900 mr-2"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() => deleteStockItem(item._id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <FaTrash className="inline-block mr-1" /> Delete
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" className="px-6 py-4 text-center text-sm text-gray-500">
+                No menu items found
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
           </div>
         </div>
       )}
 
       {/* ❌ Error Message */}
       {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

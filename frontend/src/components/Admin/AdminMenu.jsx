@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import imageCompression from "browser-image-compression"; // Import image compression library
+import imageCompression from "browser-image-compression";
+import { toast, ToastContainer } from 'react-toastify'; // Add ToastContainer here
+import 'react-toastify/dist/ReactToastify.css';
 
 const PLACEHOLDER_IMAGE =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGHSURBVHic7ZsxTsMwFIb/Z2NBYkGq1IXF9AacA3EGzkA5A0dgYOIYHIFDcA5gY2FhQQiJpVJ3kNrBVGKIkzhO47xn9/ukN9WJ/ed7sp3IgOd/UZoTRLQC8ADgyx1XB3zO5YjIA+AZwMo0TRfOuZ/guQEwf+eoEfacc+vw4LEwJz/GrwEAd+PGqRcAiwC4HT9OvQDAMoQ4TqB6AUQL+JAgrEU1vbgEZg0vgVnDS2DW8BKYNbwEZg0vgVnDS2DW8BKYNbwEZo0+JagA7AFsAZQAyu7YAng0c3PODfbhr0gPfQLwbOZSSGEJ1ABWZq6EFBT+ZZhLIgGFzwG5NBJQ+ByQSyQBhc8BuVQSUPgckEsmAYXPAbmJJEhxn7AE8GbmUkhB4deWuSQSUPgckEsjAYXPAbkkElD4HJBLIQGFzwG5BBKkuN0tAbwDeDFzKaSQQm51ANYALgF8dMclgA0uvePjOM4JRHQBoALwCeDaOfcdPDf/zvU4y865r/DhF6ys7wclKe1qAAAAAElFTkSuQmCC";
@@ -10,8 +12,10 @@ const AdminMenu = () => {
   const [newItem, setNewItem] = useState({
     name: "",
     description: "",
-    category: "Drinks",
+    category: "", // Changed from "Drinks" to empty string
     price: "",
+    quantity: "",
+    unit: "", // Changed from "units" to empty string
   });
   const [image, setImage] = useState(null);
   const [statusMessage, setStatusMessage] = useState(null);
@@ -50,34 +54,31 @@ const AdminMenu = () => {
       description: item.description,
       category: item.category,
       price: item.price,
+      quantity: item.quantity || "", // Add quantity
+      unit: item.unit || "units",    // Add unit
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = async (itemId) => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
-      try {
-        const response = await fetch(`${BACKEND_URL}/api/menu/${itemId}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/menu/${itemId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-        if (response.ok) {
-          setStatusMessage("✅ Item deleted successfully!");
-          setStatusType("success");
-          fetchMenuItems();
-        } else {
-          const result = await response.json();
-          setStatusMessage(`❌ Failed to delete item: ${result.message}`);
-          setStatusType("error");
-        }
-      } catch (error) {
-        console.error("Error deleting item:", error);
-        setStatusMessage("❌ Error deleting item");
-        setStatusType("error");
+      if (response.ok) {
+        toast.success("Item deleted successfully!");
+        fetchMenuItems(); // Refresh the menu items list
+      } else {
+        const result = await response.json();
+        toast.error(`Failed to delete item: ${result.message}`);
       }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      toast.error("Error occurred while deleting item");
     }
   };
 
@@ -127,16 +128,33 @@ const AdminMenu = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !newItem.name ||
-      !newItem.description ||
-      !newItem.price ||
-      (!isEditing && !image)
-    ) {
-      setStatusMessage(
-        "❌ Please fill all fields" + (!isEditing ? " and select an image!" : "!")
-      );
-      setStatusType("error");
+    // Enhanced validation
+    if (!newItem.name.trim()) {
+      toast.error("Item name is required!");
+      return;
+    }
+    if (!newItem.description.trim()) {
+      toast.error("Description is required!");
+      return;
+    }
+    if (!newItem.category) {
+      toast.error("Please select a category!");
+      return;
+    }
+    if (!newItem.price || newItem.price <= 0) {
+      toast.error("Please enter a valid price!");
+      return;
+    }
+    if (!newItem.quantity || newItem.quantity <= 0) {
+      toast.error("Please enter a valid quantity!");
+      return;
+    }
+    if (!newItem.unit) {
+      toast.error("Please select a unit of measurement!");
+      return;
+    }
+    if (!isEditing && !image) {
+      toast.error("Please select an image!");
       return;
     }
 
@@ -145,8 +163,10 @@ const AdminMenu = () => {
     formData.append("description", newItem.description);
     formData.append("category", newItem.category);
     formData.append("price", newItem.price);
+    formData.append("quantity", newItem.quantity);  // Add quantity
+    formData.append("unit", newItem.unit);          // Add unit
     if (image) {
-      formData.append("image", image); // Send image as a file, not base64
+      formData.append("image", image);
     }
 
     try {
@@ -162,38 +182,27 @@ const AdminMenu = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setStatusMessage(
-          `✅ Menu item ${isEditing ? "updated" : "added"} successfully!`
-        );
-        setStatusType("success");
+        // Show success toast based on operation
+        toast.success(isEditing ? "Item updated successfully!" : "Item added successfully!");
+        
         setNewItem({
           name: "",
           description: "",
-          category: "Drinks",
+          category: "",
           price: "",
+          quantity: "",
+          unit: "",
         });
         setImage(null);
         setIsEditing(false);
         setEditingItem(null);
         fetchMenuItems();
-
-        // Show "Item Added" message for 3 seconds
-        setItemAddedMessage("Item Added!");
-        setTimeout(() => {
-          setItemAddedMessage(null); // Remove message after 3 seconds
-        }, 3000);
       } else {
-        setStatusMessage(
-          `❌ Failed to ${isEditing ? "update" : "add"} menu item: ${
-            result.message
-          }`
-        );
-        setStatusType("error");
+        toast.error(`Failed to ${isEditing ? "update" : "add"} menu item: ${result.message}`);
       }
     } catch (error) {
       console.error("❌ Error:", error);
-      setStatusMessage("❌ An error occurred while submitting the form.");
-      setStatusType("error");
+      toast.error("An error occurred while submitting the form.");
     }
   };
 
@@ -228,7 +237,7 @@ const AdminMenu = () => {
             name="name"
             value={newItem.name}
             onChange={handleChange}
-            placeholder="Item Name"
+            placeholder="Item Name *"
             className="border p-2 rounded-lg w-full"
             required
           />
@@ -237,7 +246,7 @@ const AdminMenu = () => {
             name="description"
             value={newItem.description}
             onChange={handleChange}
-            placeholder="Description"
+            placeholder="Description *"
             className="border p-2 rounded-lg w-full"
             required
           />
@@ -246,20 +255,48 @@ const AdminMenu = () => {
             value={newItem.category}
             onChange={handleChange}
             className="border p-2 rounded-lg w-full"
+            required
           >
+            <option value="" disabled >Select Category *</option>
             <option value="Drinks">Drinks</option>
             <option value="Food">Food</option>
             <option value="Desserts">Desserts</option>
+            <option value="Others">Others</option>
           </select>
           <input
             type="number"
             name="price"
             value={newItem.price}
             onChange={handleChange}
-            placeholder="Price"
+            placeholder="Price *"
             className="border p-2 rounded-lg w-full"
             required
+            min="1"
           />
+          <input
+            type="number"
+            name="quantity"
+            value={newItem.quantity}
+            onChange={handleChange}
+            placeholder="Quantity *"
+            className="border p-2 rounded-lg w-full"
+            required
+            min="1"
+          />
+          <select
+            name="unit"
+            value={newItem.unit}
+            onChange={handleChange}
+            className="border p-2 rounded-lg w-full"
+            required
+          >
+            <option value="" disabled>Units of Measurement *</option>
+            <option value="kg">kg</option>
+            <option value="liters">liters</option>
+            <option value="units">units</option>
+            <option value="pcs">pcs</option>
+            <option value="others">others</option>
+          </select>
           <input
             type="file"
             accept="image/*"
@@ -283,8 +320,10 @@ const AdminMenu = () => {
                   setNewItem({
                     name: "",
                     description: "",
-                    category: "Drinks",
+                    category: "", // Changed from "Drinks" to empty string
                     price: "",
+                    quantity: "",
+                    unit: "", // Changed from "units" to empty string
                   });
                 }}
                 className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg w-full cursor-pointer hover:bg-gray-600"
@@ -325,23 +364,33 @@ const AdminMenu = () => {
             >
               Desserts
             </button>
+            <button
+              onClick={() => handleCategoryChange("Others")}
+              className={`mr-4 ${activeCategory === "Others" ? "font-bold" : ""}`}
+            >
+              Others
+            </button>
           </div>
           <div className="flex flex-wrap gap-4">
             {getFilteredMenuItems().map((item) => (
-              <div
-                key={item._id}
-                className="bg-white p-4 rounded-lg shadow-md w-48"
-              >
+              <div key={item._id} className="bg-white p-4 rounded-lg shadow-md w-48">
                 <img
                   src={item.image || PLACEHOLDER_IMAGE}
                   alt={item.name}
                   className="w-full h-32 object-cover rounded-lg"
+                  onError={(e) => {
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = PLACEHOLDER_IMAGE;
+                  }}
                 />
                 <div className="mt-2">
                   <h5 className="font-semibold">{item.name}</h5>
                   <p className="text-sm">{item.description}</p>
                   <p className="font-bold">Rs {item.price}</p>
                   <p className="text-sm text-gray-500">{item.category}</p>
+                  <p className="text-sm text-gray-500">
+                    {item.quantity} {item.unit}
+                  </p>
                 </div>
                 <div className="flex justify-between mt-4">
                   <button
@@ -362,6 +411,18 @@ const AdminMenu = () => {
           </div>
         </div>
       )}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

@@ -87,93 +87,106 @@
 // module.exports = router;
 
 
-const express = require("express");
-const multer = require("multer");
-const MenuItem = require("../models/MenuItem");
-
+const express = require('express');
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() }); // Memory storage for images
+const MenuItem = require('../models/MenuItem');
+const multer = require('multer');
 
-// Route to fetch all menu items
-router.get("/", async (req, res) => {
-  try {
-    const menuItems = await MenuItem.find(); // Fetching all items from MongoDB
-    console.log("Fetched menu items from DB:", menuItems); // Log to check if the database is being queried
-    res.json(menuItems); // Sending data as JSON response
-  } catch (error) {
-    console.error("Error fetching menu items:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+// Configure multer for memory storage
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
   }
 });
 
-// Route to add a menu item (for admin use)
-router.post("/add", upload.single("image"), async (req, res) => {
+// Add new menu item
+router.post('/add', upload.single('image'), async (req, res) => {
   try {
-    const { name, price, description, category } = req.body;
+    const { name, description, category, price, quantity, unit } = req.body;
+    
+    // Convert image buffer to base64 string
+    const imageBase64 = req.file.buffer.toString('base64');
+    const imageString = `data:${req.file.mimetype};base64,${imageBase64}`;
 
-    if (!name || !price || !description || !category || !req.file) {
-      return res.status(400).json({ message: "All fields including an image are required" });
-    }
-
-    // Create a new menu item with the provided data
-    const newItem = new MenuItem({
+    const newMenuItem = new MenuItem({
       name,
-      price: parseFloat(price),
       description,
       category,
-      image: `data:image/jpeg;base64,${req.file.buffer.toString("base64")}`, // Handle image as base64
+      price: Number(price),
+      quantity: Number(quantity),
+      unit,
+      image: imageString
     });
 
-    // Save the new item to MongoDB
-    await newItem.save();
-    res.status(201).json({ message: "Menu item added successfully!" });
+    await newMenuItem.save();
+    res.status(201).json({ message: 'Menu item added successfully', item: newMenuItem });
   } catch (error) {
-    console.error("Error adding menu item:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error('Error adding menu item:', error);
+    res.status(500).json({ message: 'Failed to add menu item' });
   }
 });
 
-// Route to update an existing menu item (for admin use)
-router.put("/:id", upload.single("image"), async (req, res) => {
+// Update menu item
+router.put('/:id', upload.single('image'), async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, price, description, category } = req.body;
-    const image = req.file ? `data:image/jpeg;base64,${req.file.buffer.toString("base64")}` : undefined;
-
-    const updatedItem = await MenuItem.findByIdAndUpdate(id, {
+    const { name, description, category, price, quantity, unit } = req.body;
+    
+    const updateData = {
       name,
-      price: parseFloat(price),
       description,
       category,
-      image: image || undefined, // Only update image if provided
-    }, { new: true });
+      price: Number(price),
+      quantity: Number(quantity),
+      unit
+    };
+
+    // Only update image if new one is provided
+    if (req.file) {
+      const imageBase64 = req.file.buffer.toString('base64');
+      updateData.image = `data:${req.file.mimetype};base64,${imageBase64}`;
+    }
+
+    const updatedItem = await MenuItem.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
 
     if (!updatedItem) {
-      return res.status(404).json({ message: "Menu item not found" });
+      return res.status(404).json({ message: 'Menu item not found' });
     }
 
-    res.status(200).json({ message: "Menu item updated successfully!" });
+    res.json({ message: 'Menu item updated successfully', item: updatedItem });
   } catch (error) {
-    console.error("Error updating menu item:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error('Error updating menu item:', error);
+    res.status(500).json({ message: 'Failed to update menu item' });
   }
 });
 
-// Route to delete a menu item by ID
-router.delete("/:id", async (req, res) => {
+// Get all menu items
+router.get('/', async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedItem = await MenuItem.findByIdAndDelete(id); // Delete the item from MongoDB
-
-    if (!deletedItem) {
-      return res.status(404).json({ message: "Menu item not found" }); // Item not found
-    }
-
-    res.status(200).json({ message: "Menu item deleted successfully!" }); // Successfully deleted
+    const items = await MenuItem.find().sort({ createdAt: -1 });
+    res.json(items);
   } catch (error) {
-    console.error("Error deleting menu item:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error('Error fetching menu items:', error);
+    res.status(500).json({ message: 'Failed to fetch menu items' });
   }
 });
 
-module.exports = router; // Export the router
+// Delete menu item
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedItem = await MenuItem.findByIdAndDelete(req.params.id);
+    if (!deletedItem) {
+      return res.status(404).json({ message: 'Menu item not found' });
+    }
+    res.json({ message: 'Menu item deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting menu item:', error);
+    res.status(500).json({ message: 'Failed to delete menu item' });
+  }
+});
+
+module.exports = router;
