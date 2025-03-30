@@ -5,8 +5,8 @@ import { toast } from "react-toastify"; // Import toast
 
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
 
-//const REACT_APP_BACKEND_URL = "http://localhost:5000";
- //const REACT_APP_BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+//const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -22,7 +22,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${REACT_APP_BACKEND_URL}/api/auth/login`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
