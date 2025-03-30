@@ -5,8 +5,8 @@ import axios from "axios";
 import Skeleton from "react-loading-skeleton"; // Import Skeleton component
 import Navbar from "./Navbar"; // Add this import
 
- const BACKEND_URL = "http://localhost:5000";
-//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+// const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 
 const Menu = () => {
   const dispatch = useDispatch();
