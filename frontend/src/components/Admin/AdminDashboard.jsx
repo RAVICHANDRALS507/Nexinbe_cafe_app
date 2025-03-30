@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // ✅ Backend API URL
- //const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "http://localhost:5000";
 const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 
 const AdminDashboard = () => {
@@ -229,17 +229,17 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6">
       {/* Dashboard Header */}
-      <div className="max-w-7xl mx-auto mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-        <p className="text-gray-600">Manage your cafe's users, admins, and inventory</p>
+      <div className="max-w-7xl mx-auto mb-4 sm:mb-8 px-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
+        <p className="text-sm sm:text-base text-gray-600">Manage your cafe's users, admins, and inventory</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 max-w-7xl mx-auto mb-8 px-2">
         {/* Users Card */}
-        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6">
+        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-4 sm:p-6">
           <div className="flex items-center">
             <div className="p-3 bg-blue-100 rounded-lg">
               <FaUsers className="text-3xl text-blue-600" />
@@ -258,7 +258,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Admins Card */}
-        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6">
+        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-4 sm:p-6">
           <div className="flex items-center mb-4">
             <div className="p-3 bg-purple-100 rounded-lg">
               <FaUserShield className="text-3xl text-purple-600" />
@@ -274,7 +274,7 @@ const AdminDashboard = () => {
               </h3>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             <button
               onClick={handleAddAdmin}
               className="flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
@@ -291,7 +291,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Stock Card */}
-        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-6">
+        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-4 sm:p-6">
           <div className="flex items-center mb-4">
             <div className="p-3 bg-orange-100 rounded-lg">
               <FaBoxes className="text-3xl text-orange-600" />
@@ -312,98 +312,34 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Modal Backdrop */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          {/* Modal Content */}
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
-            {/* Close Button */}
-            <button
-              onClick={() => {
-                setShowForm(false);
-              }}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-              <FaTimes className="text-xl" />
-            </button>
-            
-            {/* Form Content */}
-            <div>
-              <h3 className="text-xl font-semibold text-gray-700">Add New Admin</h3>
-              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                <div>
-                  <label htmlFor="username" className="block text-gray-700">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                    className="w-full p-2 mt-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="password" className="block text-gray-700">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full p-2 mt-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div className="mt-4">
-                  <button
-                    type="submit"
-                    className="w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-600 transition-all duration-300"
-                  >
-                    Add Admin
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Tables Section */}
       {(showAdmins || showStock) && (
         <div className="bg-white rounded-xl shadow-md overflow-hidden max-w-7xl mx-auto mt-8">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-800">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
               {showAdmins ? 'Admin List' : 'Stock Management'}
             </h2>
           </div>
           <div className="overflow-x-auto">
-            {/* Existing tables with updated styles */}
             {showAdmins && (
-              <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-8">
-                <h3 className="text-xl font-semibold text-gray-700">Admin List</h3>
-                <div className="mt-4">
-                  <table className="min-w-full">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Time</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <div className="p-4 sm:p-6">
+                <div className="inline-block min-w-full align-middle">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Time</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {adminList.length > 0 ? (
                         adminList.map((admin) => (
-                          <tr key={admin._id}>
-                            {editingAdmin && editingAdmin._id === admin._id ? (
-                              <td className="px-6 py-4">
+                          <tr key={admin._id} className="hover:bg-gray-50">
+                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm">
+                              {editingAdmin && editingAdmin._id === admin._id ? (
                                 <div className="space-y-4 max-w-md">
-                                  {/* Name Input */}
                                   <div className="flex flex-col">
                                     <label className="text-sm font-medium text-gray-600 mb-1">Name</label>
                                     <input
@@ -414,8 +350,6 @@ const AdminDashboard = () => {
                                       placeholder="Name"
                                     />
                                   </div>
-
-                                  {/* Password Toggle Button */}
                                   <button
                                     onClick={togglePasswordFields}
                                     className="text-blue-600 hover:text-blue-900 text-sm font-medium flex items-center gap-2"
@@ -436,8 +370,6 @@ const AdminDashboard = () => {
                                       </>
                                     )}
                                   </button>
-                                  
-                                  {/* Password Fields */}
                                   {showPasswordFields && (
                                     <div className="space-y-3 border-t pt-3">
                                       <div className="flex flex-col">
@@ -463,19 +395,17 @@ const AdminDashboard = () => {
                                     </div>
                                   )}
                                 </div>
-                              </td>
-                            ) : (
-                              <td className="px-6 py-4 whitespace-nowrap">
+                              ) : (
                                 <div className="text-sm font-medium text-gray-900">{admin.name}</div>
-                              </td>
-                            )}
-                            <td className="px-6 py-4 whitespace-nowrap">
+                              )}
+                            </td>
+                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-500">{admin.createdAtDate}</div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-500">{admin.createdAtTime}</div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-medium">
                               {editingAdmin && editingAdmin._id === admin._id ? (
                                 <button
                                   onClick={handleSaveUpdate}
@@ -502,7 +432,7 @@ const AdminDashboard = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                          <td colSpan="4" className="px-4 sm:px-6 py-3 sm:py-4 text-center text-sm text-gray-500">
                             No admins found
                           </td>
                         </tr>
@@ -513,149 +443,194 @@ const AdminDashboard = () => {
               </div>
             )}
 
-{showStock && (
-  <div className="p-6">
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {stockList.length > 0 ? (
-            stockList.map((item) => (
-              <tr key={item._id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {editingStock && editingStock._id === item._id ? (
-                    <input
-                      type="text"
-                      value={editStock.name}
-                      onChange={(e) => setEditStock({ ...editStock, name: e.target.value })}
-                      className="border rounded-md px-3 py-1 w-full"
-                    />
-                  ) : (
-                    <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {editingStock && editingStock._id === item._id ? (
-                    <select
-                      value={editStock.category}
-                      onChange={(e) => setEditStock({ ...editStock, category: e.target.value })}
-                      className="border rounded-md px-3 py-1 w-full"
-                    >
-                      <option value="" disabled>Select Category</option>
-                      <option value="Drinks">Drinks</option>
-                      <option value="Food">Food</option>
-                      <option value="Desserts">Desserts</option>
-                      <option value="Others">Others</option>
-                    </select>
-                  ) : (
-                    <div className="text-sm text-gray-500">{item.category}</div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {editingStock && editingStock._id === item._id ? (
-                    <input
-                      type="number"
-                      value={editStock.price}
-                      onChange={(e) => setEditStock({ ...editStock, price: Number(e.target.value) })}
-                      className="border rounded-md px-3 py-1 w-full"
-                    />
-                  ) : (
-                    <div className="text-sm text-gray-500">₹{item.price}</div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {editingStock && editingStock._id === item._id ? (
-                    <input
-                      type="number"
-                      value={editStock.quantity}
-                      onChange={(e) => setEditStock({ ...editStock, quantity: Number(e.target.value) })}
-                      className="border rounded-md px-3 py-1 w-full"
-                    />
-                  ) : (
-                    <div className="text-sm text-gray-500">{item.quantity}</div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {editingStock && editingStock._id === item._id ? (
-                    <select
-                      value={editStock.unit}
-                      onChange={(e) => setEditStock({ ...editStock, unit: e.target.value })}
-                      className="border rounded-md px-3 py-1 w-full"
-                    >
-                      <option value="" disabled>Select Category</option>
-                      <option value="kg">kg</option>
-                      <option value="Liters">Liters</option>
-                      <option value="Units">Units</option>
-                      <option value="pcs">pcs</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  ) : (
-                    <div className="text-sm text-gray-500">{item.unit}</div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                  {editingStock && editingStock._id === item._id ? (
-                    <>
-                      <button
-                        onClick={handleSaveStockUpdate}
-                        className="text-green-600 hover:text-green-900"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => setEditingStock(null)}
-                        className="text-gray-600 hover:text-gray-900"
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => handleUpdateStock(item)}
-                        className="text-blue-600 hover:text-blue-900 mr-2"
-                      >
-                        Update
-                      </button>
-                      <button
-                        onClick={() => deleteStockItem(item._id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <FaTrash className="inline-block mr-1" /> Delete
-                      </button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="6" className="px-6 py-4 text-center text-sm text-gray-500">
-                No menu items found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  </div>
-)}
+            {showStock && (
+              <div className="p-4 sm:p-6">
+                <div className="inline-block min-w-full align-middle">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {stockList.map((item) => (
+                        <tr key={item._id} className="hover:bg-gray-50">
+                          <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            {editingStock && editingStock._id === item._id ? (
+                              <input
+                                type="text"
+                                value={editStock.name}
+                                onChange={(e) => setEditStock({ ...editStock, name: e.target.value })}
+                                className="border rounded-md px-3 py-1 w-full"
+                              />
+                            ) : (
+                              <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                            )}
+                          </td>
+                          <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            {editingStock && editingStock._id === item._id ? (
+                              <select
+                                value={editStock.category}
+                                onChange={(e) => setEditStock({ ...editStock, category: e.target.value })}
+                                className="border rounded-md px-3 py-1 w-full"
+                              >
+                                <option value="" disabled>Select Category</option>
+                                <option value="Drinks">Drinks</option>
+                                <option value="Food">Food</option>
+                                <option value="Desserts">Desserts</option>
+                                <option value="Others">Others</option>
+                              </select>
+                            ) : (
+                              <div className="text-sm text-gray-500">{item.category}</div>
+                            )}
+                          </td>
+                          <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            {editingStock && editingStock._id === item._id ? (
+                              <input
+                                type="number"
+                                value={editStock.price}
+                                onChange={(e) => setEditStock({ ...editStock, price: Number(e.target.value) })}
+                                className="border rounded-md px-3 py-1 w-full"
+                              />
+                            ) : (
+                              <div className="text-sm text-gray-500">₹{item.price}</div>
+                            )}
+                          </td>
+                          <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            {editingStock && editingStock._id === item._id ? (
+                              <input
+                                type="number"
+                                value={editStock.quantity}
+                                onChange={(e) => setEditStock({ ...editStock, quantity: Number(e.target.value) })}
+                                className="border rounded-md px-3 py-1 w-full"
+                              />
+                            ) : (
+                              <div className="text-sm text-gray-500">{item.quantity}</div>
+                            )}
+                          </td>
+                          <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            {editingStock && editingStock._id === item._id ? (
+                              <select
+                                value={editStock.unit}
+                                onChange={(e) => setEditStock({ ...editStock, unit: e.target.value })}
+                                className="border rounded-md px-3 py-1 w-full"
+                              >
+                                <option value="" disabled>Select Category</option>
+                                <option value="kg">kg</option>
+                                <option value="Liters">Liters</option>
+                                <option value="Units">Units</option>
+                                <option value="pcs">pcs</option>
+                                <option value="Other">Other</option>
+                              </select>
+                            ) : (
+                              <div className="text-sm text-gray-500">{item.unit}</div>
+                            )}
+                          </td>
+                          <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                            {editingStock && editingStock._id === item._id ? (
+                              <>
+                                <button
+                                  onClick={handleSaveStockUpdate}
+                                  className="text-green-600 hover:text-green-900"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={() => setEditingStock(null)}
+                                  className="text-gray-600 hover:text-gray-900"
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  onClick={() => handleUpdateStock(item)}
+                                  className="text-blue-600 hover:text-blue-900 mr-2"
+                                >
+                                  Update
+                                </button>
+                                <button
+                                  onClick={() => deleteStockItem(item._id)}
+                                  className="text-red-600 hover:text-red-900"
+                                >
+                                  <FaTrash className="inline-block mr-1" /> Delete
+                                </button>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* ❌ Error Message */}
-      {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+      {/* Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-4 sm:p-6 relative">
+            <button
+              onClick={() => {
+                setShowForm(false);
+              }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <FaTimes className="text-xl" />
+            </button>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-700">Add New Admin</h3>
+              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                <div>
+                  <label htmlFor="username" className="block text-gray-700">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="password" className="block text-gray-700">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full p-2 mt-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div className="mt-4">
+                  <button
+                    type="submit"
+                    className="w-full py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-600 transition-all duration-300"
+                  >
+                    Add Admin
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
+      {/* Toast Container */}
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
