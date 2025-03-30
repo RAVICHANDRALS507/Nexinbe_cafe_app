@@ -5,7 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // ✅ Backend API URL
-const API_BASE_URL = "http://localhost:5000";
+ const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -39,7 +40,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/admin/dashboard`);
+        const response = await axios.get(`${BACKEND_URL}/api/admin/dashboard`);
         if (response.data) {
           setStats({
             users: response.data.users || 0, // 📊 Registered Users
@@ -82,7 +83,7 @@ const AdminDashboard = () => {
       // Check if the payload is formatted correctly
       console.log("Sending Payload:", payload);
 
-      const response = await axios.post(`${API_BASE_URL}/api/admin/add`, payload);
+      const response = await axios.post(`${BACKEND_URL}/api/admin/add`, payload);
       toast.success('Admin added successfully!');
       setShowForm(false);
       setUsername("");
@@ -96,7 +97,7 @@ const AdminDashboard = () => {
   // ✅ Fetch admins when Show Admins button is clicked
   const handleShowAdmins = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/admin/admins`); // Changed from /api/admins to /api/admin/admins
+      const response = await axios.get(`${BACKEND_URL}/api/admin/admins`); // Changed from /api/admins to /api/admin/admins
       setAdminList(response.data);
       setShowAdmins(true);
     } catch (err) {
@@ -132,7 +133,7 @@ const AdminDashboard = () => {
         }
 
         // First verify current password
-        const verifyResponse = await axios.post(`${API_BASE_URL}/api/admin/verify-password`, {
+        const verifyResponse = await axios.post(`${BACKEND_URL}/api/admin/verify-password`, {
           adminId: editingAdmin._id,
           currentPassword
         });
@@ -148,7 +149,7 @@ const AdminDashboard = () => {
 
       // Proceed with update
       const response = await axios.put(
-        `${API_BASE_URL}/api/admin/update/${editingAdmin._id}`, 
+        `${BACKEND_URL}/api/admin/update/${editingAdmin._id}`, 
         updateData
       );
 
@@ -169,7 +170,7 @@ const AdminDashboard = () => {
   const handleDelete = async (adminId) => {
     if (window.confirm('Are you sure you want to delete this admin?')) {
       try {
-        await axios.delete(`${API_BASE_URL}/api/admin/delete/${adminId}`);
+        await axios.delete(`${BACKEND_URL}/api/admin/delete/${adminId}`);
         toast.success('Admin deleted successfully!');
         // Refresh admin list
         handleShowAdmins();
@@ -182,7 +183,7 @@ const AdminDashboard = () => {
 
   const handleViewStock = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/menu`);
+      const response = await axios.get(`${BACKEND_URL}/api/menu`);
       setStockList(response.data);
       setShowStock(true);
     } catch (error) {
@@ -194,7 +195,7 @@ const AdminDashboard = () => {
   const deleteStockItem = async (id) => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
-        await axios.delete(`${API_BASE_URL}/api/stock/delete/${id}`);
+        await axios.delete(`${BACKEND_URL}/api/stock/delete/${id}`);
         toast.success('Stock item deleted successfully!');
         handleViewStock(); // Refresh stock list
       } catch (error) {
@@ -217,7 +218,7 @@ const AdminDashboard = () => {
 
   const handleSaveStockUpdate = async () => {
     try {
-      await axios.put(`${API_BASE_URL}/api/menu/${editingStock._id}`, editStock);
+      await axios.put(`${BACKEND_URL}/api/menu/${editingStock._id}`, editStock);
       toast.success('Menu item updated successfully!');
       setEditingStock(null);
       handleViewStock(); // Refresh list
