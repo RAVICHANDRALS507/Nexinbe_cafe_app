@@ -5,8 +5,8 @@ import axios from "axios";
 import Skeleton from "react-loading-skeleton"; // Import Skeleton component
 import Navbar from "./Navbar"; // Add this import
 
-// const BACKEND_URL = "http://localhost:5000";
-//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+// const REACT_APP_BACKEND_URL = "http://localhost:5000";
+//const REACT_APP_BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 
 const Menu = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const Menu = () => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.get(`${BACKEND_URL}/api/menu`);
+        const response = await axios.get(`${REACT_APP_BACKEND_URL}/api/menu`);
         console.log("Fetched menu items:", response.data);
         setMenuItems(response.data); // Update state with menu items
         setLoading(false); // Set loading to false after fetching data

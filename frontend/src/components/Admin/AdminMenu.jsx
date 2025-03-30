@@ -6,8 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const PLACEHOLDER_IMAGE =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGHSURBVHic7ZsxTsMwFIb/Z2NBYkGq1IXF9AacA3EGzkA5A0dgYOIYHIFDcA5gY2FhQQiJpVJ3kNrBVGKIkzhO47xn9/ukN9WJ/ed7sp3IgOd/UZoTRLQC8ADgyx1XB3zO5YjIA+AZwMo0TRfOuZ/guQEwf+eoEfacc+vw4LEwJz/GrwEAd+PGqRcAiwC4HT9OvQDAMoQ4TqB6AUQL+JAgrEU1vbgEZg0vgVnDS2DW8BKYNbwEZg0vgVnDS2DW8BKYNbwEZo0+JagA7AFsAZQAyu7YAng0c3PODfbhr0gPfQLwbOZSSGEJ1ABWZq6EFBT+ZZhLIgGFzwG5NBJQ+ByQSyQBhc8BuVQSUPgckEsmAYXPAbmJJEhxn7AE8GbmUkhB4deWuSQSUPgckEsjAYXPAbkkElD4HJBLIQGFzwG5BBKkuN0tAbwDeDFzKaSQQm51ANYALgF8dMclgA0uvePjOM4JRHQBoALwCeDaOfcdPDf/zvU4y865r/DhF6ys7wclKe1qAAAAAElFTkSuQmCC";
 
-// const BACKEND_URL = "http://localhost:5000";
-//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+// const REACT_APP_BACKEND_URL = "http://localhost:5000";
+//const REACT_APP_BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 
 
 const AdminMenu = () => {
@@ -64,7 +64,7 @@ const AdminMenu = () => {
 
   const handleDelete = async (itemId) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/menu/${itemId}`, {
+      const response = await fetch(`${REACT_APP_BACKEND_URL}/api/menu/${itemId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const AdminMenu = () => {
       setStatusMessage("Loading menu items...");
       setStatusType("info");
 
-      const response = await fetch(`${BACKEND_URL}/api/menu`, {
+      const response = await fetch(`${REACT_APP_BACKEND_URL}/api/menu`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -173,8 +173,8 @@ const AdminMenu = () => {
 
     try {
       const url = isEditing
-        ? `${BACKEND_URL}/api/menu/${editingItem._id}`
-        : `${BACKEND_URL}/api/menu/add`;
+        ? `${REACT_APP_BACKEND_URL}/api/menu/${editingItem._id}`
+        : `${REACT_APP_BACKEND_URL}/api/menu/add`;
 
       const response = await fetch(url, {
         method: isEditing ? "PUT" : "POST",

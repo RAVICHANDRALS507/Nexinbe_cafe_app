@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../User/Navbar";
 
 // ✅ Backend API URL
-//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+//const REACT_APP_BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({ name: "", password: "" });
@@ -21,7 +21,7 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/admin/login`, {
+      const response = await fetch(`${REACT_APP_BACKEND_URL}/api/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
