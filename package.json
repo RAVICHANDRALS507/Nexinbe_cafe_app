@@ -1,6 +1,6 @@
 {
   "name": "nexinbe_cafe_app",
-  "version": "1.0.0", 
+  "version": "1.0.0",
   "description": "Cafe Application",
   "scripts": {
     "frontend": "cd frontend && npm run dev",
@@ -11,5 +11,9 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "framer-motion": "^12.6.3"
   }
 }

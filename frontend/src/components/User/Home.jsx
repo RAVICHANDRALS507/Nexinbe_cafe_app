@@ -3,42 +3,67 @@ import Navbar from "./Navbar";
 
 const Home = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-hidden">
       <Navbar />
-      <div
-        className="relative flex-1 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.pexels.com/photos/459469/pexels-photo-459469.jpeg?cs=srgb&dl=basil-delicious-food-459469.jpg&fm=jpg')",
-          paddingTop: "10rem", // Adjust padding to avoid overlap with Navbar
-        }}
-      >
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between h-full px-4 py-8 md:p-10">
-          <div className="flex flex-col items-start justify-center w-full md:w-1/2">
-            <h1 className="text-3xl sm:text-4xl font-bold text-white animate-typewriter">
-              Welcome to Our Cafe
-            </h1>
-            <p className="text-base sm:text-lg my-4 text-white animate-typewriter">
-              Discover a world of flavors and indulge in our culinary delights!
-            </p>
-            <Link
-              to="/menu"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors mt-4"
-            >
-              View Menu
-            </Link>
-          </div>
-          <div className="flex items-center justify-center w-full md:w-1/2 mt-8 md:mt-0">
+
+      <div className="relative flex-1 overflow-hidden h-screen">
+        {/* Sliding background container */}
+        <div className="absolute inset-0 z-0 w-[600%] h-full flex animate-scroll-images">
+          {/* Duplicate images for seamless loop */}
+          {[
+            "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
+            "https://images.pexels.com/photos/406152/pexels-photo-406152.jpeg",
+            "https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg",
+          ].map((src, idx) => (
             <img
-              src="https://images.pexels.com/photos/1633578/pexels-photo-1633578.jpeg?cs=srgb&dl=beef-bread-buns-1633578.jpg&fm=jpg"
-              alt="Delicious Food"
-              className="w-72 h-72 md:w-80 md:h-80 object-cover shadow-lg"
-              style={{ borderRadius: "8.25rem" }}
+              key={idx}
+              src={src}
+              alt={`Food ${idx + 1}`}
+              className="w-screen h-full object-cover"
             />
-          </div>
+          ))}
+          {[
+            "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
+            "https://images.pexels.com/photos/406152/pexels-photo-406152.jpeg",
+            "https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg",
+          ].map((src, idx) => (
+            <img
+              key={`duplicate-${idx}`}
+              src={src}
+              alt={`Food duplicate ${idx + 1}`}
+              className="w-screen h-full object-cover"
+            />
+          ))}
+        </div>
+
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black opacity-50 z-10"></div>
+
+        {/* Foreground content */}
+        <div className="relative z-20 flex flex-col items-center justify-center text-center h-full px-4 py-20">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+            Order Your Favorite Food!
+          </h1>
+          <Link
+            to="/menu"
+            className="bg-yellow-500 text-black font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-yellow-600 transition duration-300"
+          >
+            Order Now
+          </Link>
         </div>
       </div>
+
+      {/* Background scroll animation */}
+      <style>{`
+        @keyframes scrollImages {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-300vw); }
+        }
+
+        .animate-scroll-images {
+          animation: scrollImages 15s linear infinite;
+        }
+      `}</style>
     </div>
   );
 };
