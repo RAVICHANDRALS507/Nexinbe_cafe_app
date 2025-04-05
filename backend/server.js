@@ -55,8 +55,18 @@ const upload = multer(); // Initialize Multer
 //app.use(cors({ origin: "https://nexinbe-cafe-app-s1a1.vercel.app/",  methods: "GET,POST,PUT,DELETE", credentials: true }));
 
 
-//app.use(cors({ origin: "*",  methods: "GET,POST,PUT,DELETE", credentials: true }));
-app.use(cors({ origin: ['https://nexinbe-cafe-app-s1a1.vercel.app', 'https://nexinbe-cafe-app-drab.vercel.app','https://nexinbe-cafe-app-8gyx.vercel.app'],  methods: "GET,POST,PUT,DELETE", credentials: true }));
+//app.use(cors({ origin: "*",  methods: "GET,POST,PUT,DELETE", credentials: true }));/
+app.use(cors({
+  origin: [
+    'https://nexinbe-cafe-app-s1a1.vercel.app', 
+    'https://nexinbe-cafe-app-drab.vercel.app', 
+    'https://nexinbe-cafe-app-8gyx.vercel.app',
+    'https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app'
+  ],
+  methods: 'GET,POST,PUT,DELETE',
+  credentials: true,
+}));
+// app.use(cors({ origin: ['https://nexinbe-cafe-app-s1a1.vercel.app', 'https://nexinbe-cafe-app-drab.vercel.app','https://nexinbe-cafe-app-8gyx.vercel.app'],  methods: "GET,POST,PUT,DELETE", credentials: true }));
 
 
 //app.use(cors({ origin: ['https://nexinbe-cafe-app-8gyx.vercel.app/home'],  methods: "GET,POST,PUT,DELETE", credentials: true }));
