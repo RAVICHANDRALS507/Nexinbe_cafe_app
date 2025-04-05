@@ -481,7 +481,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from "framer-motion/dist/framer-motion";
+//import { motion } from "framer-motion/dist/framer-motion";
 import axios from 'axios';
 
 //const BACKEND_URL = "http://localhost:5000";
