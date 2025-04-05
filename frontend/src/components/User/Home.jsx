@@ -17,7 +17,7 @@ const Home = () => {
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between h-full px-4 py-8 md:p-10">
           <div className="flex flex-col items-start justify-center w-full md:w-1/2">
             <h1 className="text-3xl sm:text-4xl font-bold text-white animate-typewriter">
-              Welcome to Our Cafe
+              Welcome to Our Cafeteria
             </h1>
             <p className="text-base sm:text-lg my-4 text-white animate-typewriter">
               Discover a world of flavors and indulge in our culinary delights!
