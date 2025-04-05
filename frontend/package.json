@@ -18,6 +18,7 @@
     "axios": "^1.8.4",
     "browser-image-compression": "^2.0.2",
     "dotenv": "^16.4.7",
+    "framer-motion": "^12.6.3",
     "gh-pages": "^6.3.0",
     "lucide-react": "^0.481.0",
     "react": "^19.0.0",
