@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import Navbar from './Navbar';
 
 //const BACKEND_URL = "http://localhost:5000"; // Replace with your actual backend URL
@@ -13,6 +13,7 @@ const Home = () => {
   const [featuredItems, setFeaturedItems] = useState([]);
   const [loadingFeatured, setLoadingFeatured] = useState(true);
   const [errorFeatured, setErrorFeatured] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const backgroundImages = [
     "https://th.bing.com/th/id/OIP.jJI3bTJ-diLfKDHb9-vwmwHaE8?rs=1&pid=ImgDetMain",
@@ -79,6 +80,10 @@ const Home = () => {
     return () => clearInterval(intervalId); // Cleanup on unmount
   }, [featuredRefreshInterval]); // Re-run effect only if the interval changes (it won't here)
 
+  const handleFeaturedDelightsClick = () => {
+    navigate('/menu');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -128,7 +133,7 @@ const Home = () => {
       </div>
 
       {/* Featured Items Section */}
-      <div className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-white cursor-pointer" onClick={handleFeaturedDelightsClick}> {/* Added cursor-pointer and onClick */}
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">
             <span className="relative inline-block group">
