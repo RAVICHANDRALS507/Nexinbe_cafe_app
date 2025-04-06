@@ -8,6 +8,8 @@ import Signup from "./components/User/Signup";
 import Login from "./components/User/Login";
 import AdminLogin from "./components/Admin/AdminLogin";
 import AdminPanel from "./components/Admin/AdminPanel";
+import InactivityTimeout from "./components/InactivityTimeout"; // Import the InactivityTimeout component
+import { ToastContainer } from "react-toastify"; // Uncomment if you want to use ToastContainer
 
 function App() {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
@@ -25,7 +27,7 @@ function App() {
   return (
     <Router>
       
-      
+      <InactivityTimeout />
       <Routes>
         
         <Route path="/home" element={<Home />} />
@@ -38,6 +40,7 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminPanel />} />
         <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
+      <ToastContainer />
     </Router>
   );
 }
