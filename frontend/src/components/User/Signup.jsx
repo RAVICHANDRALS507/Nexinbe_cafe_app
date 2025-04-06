@@ -75,12 +75,12 @@ const Signup = () => {
       <div
         className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center p-4 relative"
         style={{
-          backgroundImage: `url('https://th.bing.com/th/id/OIP.vflclr4yRBpju0nL7ImkvQHaFj?w=230&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7')`,
-          paddingTop: '6rem', // Adjust padding to avoid overlap with Navbar
+          backgroundImage: "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2070&q=80')",
+          //paddingTop: '6rem', // Adjust padding to avoid overlap with Navbar
         }}
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-0"></div>
+        <div className="absolute inset-0 bg-black opacity-40"></div>
 
         {/* Logo */}
         <div className="w-full max-w-md text-center mb-8 z-10">
@@ -90,7 +90,7 @@ const Signup = () => {
             transition={{ duration: 0.5 }}
             className="text-4xl font-bold text-white"
           >
-            Cafe<span className="text-orange-500">Signup</span>
+            Nexinbe<span className="text-orange-500"> Cafe</span>
           </motion.h1>
         </div>
 
@@ -103,7 +103,7 @@ const Signup = () => {
         >
           <div className="bg-white/90 rounded-2xl shadow-xl p-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-              Create your account
+              Create User Account
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">

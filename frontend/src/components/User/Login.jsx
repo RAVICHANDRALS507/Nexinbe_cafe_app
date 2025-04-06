@@ -94,23 +94,25 @@ const Login = () => {
   
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-center p-4">
+    <>
+    <Navbar/>
+    <div className="min-h-screen relative flex flex-col items-center justify-center p-4 relative">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-14954744722874d71bcdd2085?ixlib=rb4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format& fit=crop&w=2070&q=80')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2070&q=80')",
         }}
       >
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-      </div>
+        <div className="absolute inset-0 bg-black opacity-40"></div>
+        </div>
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md">
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-8"
         >
           <Link to="/" className="inline-block">
@@ -248,6 +250,7 @@ spin mr-2"></div>
         </a>
       </motion.p>
     </div>
+    </>
   );
 };
 
