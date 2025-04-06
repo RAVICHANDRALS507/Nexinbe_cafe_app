@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify'; // Import toast
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
 import Navbar from "./Navbar"; // Add this import
 
 //const BACKEND_URL = "http://localhost:5000";
@@ -129,7 +128,7 @@ const Login = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="bg-white rounded-2xl shadow-2xl p-8 backdrop-blur-lg bg-opacity-95"
         >
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Welcome Back</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Welcome Back User Login</h2>
 
           {loginError && (
             <motion.div
