@@ -1,6 +1,7 @@
 // src/components/InactivityTimeout.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const InactivityTimeout = () => {
   const navigate = useNavigate();
@@ -8,7 +9,8 @@ const InactivityTimeout = () => {
   // Function to clear token and redirect after inactivity
   const logoutOnInactivity = () => {
     localStorage.removeItem('token');  // Remove token from local storage
-    alert('You have been logged out due to inactivity.');
+    //alert('You have been logged out due to inactivity.');
+    toast.error('You have been logged out due to inactivity.');  // Show toast notification
     navigate('/login');  // Redirect to login page or home page
   };
 

@@ -6,7 +6,9 @@ import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast noti
 import Navbar from "./Navbar"; // Add this import
 
 //const BACKEND_URL = "http://localhost:5000";
-const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ssprojects.vercel.app";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ssprojects.vercel.app";
+const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
+
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -53,7 +55,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (validateForm()) {
       setIsLoading(true);
       try {
@@ -64,9 +66,9 @@ const Login = () => {
           },
           body: JSON.stringify(formData),
         });
-
+  
         const data = await response.json();
-
+  
         if (response.ok) {
           localStorage.setItem('token', data.token);
           toast.success("🎉 Login successful!");
@@ -74,7 +76,12 @@ const Login = () => {
             navigate('/menu');
           }, 500);
         } else {
-          toast.error(data.error || 'Invalid email or password');
+          // Check if the error indicates that the user doesn't exist
+          if (data.error && data.error.includes('user not found')) {
+            toast.error("It seems like you don't have an account. Please sign up first!");
+          } else {
+            toast.error(data.error || 'Invalid email or password');
+          }
         }
       } catch (error) {
         console.error("❌ Error during login:", error);
@@ -84,6 +91,7 @@ const Login = () => {
       }
     }
   };
+  
 
   return (
     <div className="min-h-screen relative flex flex-col items-center justify-center p-4">

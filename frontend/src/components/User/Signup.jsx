@@ -7,7 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navbar from "./Navbar"; // Add this import
 
 //const BACKEND_URL = "http://localhost:5000"; // Make sure this is correct for your backend
-const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
 const Signup = () => {
   const navigate = useNavigate();

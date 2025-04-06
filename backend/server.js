@@ -15,19 +15,20 @@ const upload = multer(); // Initialize Multer
 
 app.use(cors({
   origin: [
+    'http://localhost:5173',
     'https://nexinbe-cafe-app-8gyx.vercel.app',
-    'https://nexinbe-cafe-app-s1a1.vercel.app',
-    'https://nexinbe-cafe-app-drab.vercel.app',
-    'https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app',
-    'https://nexinbe-cafe-app-git-main-ravichandra-l-ssprojects.vercel.app',
-    'http://localhost:5173' // for local development
+    'https://nexinbe-cafe-app.vercel.app'
   ],
-  methods: 'GET, POST, PUT, DELETE, OPTIONS',
-  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
-// Add OPTIONS preflight handler
+// Add this line after CORS middleware
 app.options('*', cors());
+
+// // Add OPTIONS preflight handler
+// app.options('*', cors());
 
 // 🔹 Middleware (Correct Order)
 app.use(express.urlencoded({ extended: true })); // Handles URL-encoded data
@@ -39,6 +40,12 @@ app.use("/api/auth", userRoutes);  // No multer here, handle in routes
 // app.use("/api/stock", stockRoutes);  // No multer here, handle in routes
 app.use("/api/menu", menuRoutes);  // No multer here, handle in routes
 //app.use('/api/menuitems', menuItemsRouter);
+
+// Add an error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
+});
 
 // 🔹 MongoDB Connection
 mongoose
