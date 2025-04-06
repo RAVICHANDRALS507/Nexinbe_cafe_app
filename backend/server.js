@@ -20,6 +20,8 @@ app.use(cors({
     'https://nexinbe-cafe-app-drab.vercel.app',
     'https://nexinbe-cafe-app-8gyx.vercel.app',
     'https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app',
+    'https://nexinbe-cafe-app-8gyx-git-main-ravichandra-l-ss-projects.vercel.app/home',
+    'https://nexinbe-cafe-app-8gyx-rjqb07r9q-ravichandra-l-ss-projects.vercel.app/home',
   ],
   methods: 'GET, POST, PUT, DELETE, OPTIONS',  // Explicitly allow OPTIONS
   credentials: true,
