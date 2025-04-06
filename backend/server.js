@@ -13,21 +13,20 @@ const upload = multer(); // Initialize Multer
 
 // 🔹 Enable CORS
 
-//app.use(cors({ origin: "*",  methods: "GET,POST,PUT,DELETE", credentials: true }));
 app.use(cors({
   origin: [
-    'https://nexinbe-cafe-app-s1a1.vercel.app','http://localhost:5173',
-    'https://nexinbe-cafe-app-drab.vercel.app',
     'https://nexinbe-cafe-app-8gyx.vercel.app',
+    'https://nexinbe-cafe-app-s1a1.vercel.app',
+    'https://nexinbe-cafe-app-drab.vercel.app',
     'https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app',
-    'https://nexinbe-cafe-app-8gyx-git-main-ravichandra-l-ss-projects.vercel.app',
-    'https://nexinbe-cafe-app-8gyx-rjqb07r9q-ravichandra-l-ss-projects.vercel.app',
+    'https://nexinbe-cafe-app-git-main-ravichandra-l-ssprojects.vercel.app',
+    'http://localhost:5173' // for local development
   ],
-  methods: 'GET, POST, PUT, DELETE, OPTIONS',  // Explicitly allow OPTIONS
+  methods: 'GET, POST, PUT, DELETE, OPTIONS',
   credentials: true,
 }));
 
-// Optional: Handle OPTIONS request explicitly (for complex cases)
+// Add OPTIONS preflight handler
 app.options('*', cors());
 
 // 🔹 Middleware (Correct Order)

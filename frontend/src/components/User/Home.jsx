@@ -82,46 +82,46 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <div className="relative h-[calc(100vh-64px)] md:h-[90vh] overflow-hidden">
-        {backgroundImages.map((imageUrl, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-${transitionDuration} ease-in-out ${
-              index === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            } ${imageMarginTop}`} // Added margin-top class here
-            style={{
-              backgroundImage: `url('${imageUrl}')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          >
-            <div className="absolute inset-0 bg-black opacity-50"></div>
-          </div>
-        ))}
+    <div className="relative h-screen md:h-[800px] overflow-hidden"> {/* Increased height */}
+      {backgroundImages.map((imageUrl, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 w-full h-full transition-opacity duration-${transitionDuration} ease-in-out ${
+            index === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+          } ${imageMarginTop}`}
+          style={{
+            backgroundImage: `url('${imageUrl}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+        </div>
+      ))}
 
-        <div className="relative h-full flex items-center justify-center text-center px-4 sm:px-8 z-20">
-          <div className={`space-y-6 transform transition-all duration-1000 ease-out
-              ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white group">
-              <span className="relative inline-block">
-                Welcome to{" "}
-                <span className="text-orange-500 relative after:block after:h-[3px] after:bg-orange-500 after:scale-x-0 group-hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-500">
-                  Cafe
-                </span>
+      <div className="relative h-full flex items-center justify-center text-center px-4 sm:px-8 z-20">
+        <div className={`space-y-8 transform transition-all duration-1000 ease-out
+            ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white group"> {/* Increased heading size */}
+            <span className="relative inline-block">
+              Welcome to{" "}
+              <span className="text-orange-500 relative after:block after:h-[4px] after:bg-orange-500 after:scale-x-0 group-hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-500">
+                Cafe
               </span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-200 max-w-md md:max-w-2xl mx-auto">
-              Experience the perfect blend of taste and ambiance
-            </p>
-            <Link
-              to="/menu"
-              className="inline-block px-6 py-3 md:px-8 md:py-3 bg-orange-500 text-white rounded-full font-semibold hover:bg-orange-600 transform hover:scale-105 transition-all duration-300 text-sm md:text-base"
-            >
-              Explore Menu
-            </Link>
-          </div>
+            </span>
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-200 max-w-md md:max-w-2xl mx-auto"> {/* Increased paragraph size */}
+            Experience the perfect blend of taste and ambiance
+          </p>
+          <Link
+            to="/menu"
+            className="inline-block px-10 py-4 md:px-12 md:py-4 bg-orange-500 text-white rounded-full font-semibold hover:bg-orange-600 transform hover:scale-105 transition-all duration-300 text-lg md:text-xl" 
+          >
+            Explore Menu
+          </Link>
         </div>
       </div>
+    </div>
 
       {/* Featured Items Section */}
       <div className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-white">
