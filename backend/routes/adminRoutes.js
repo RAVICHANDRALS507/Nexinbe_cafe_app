@@ -4,13 +4,13 @@ const Admin = require('../models/Admin');
 const { adminLogin, getUserStats } = require("../controllers/adminController");
 const router = express.Router();
 
-// ✅ Admin Login
+//  Admin Login
 router.post("/login", adminLogin);
 
-// ✅ Get User & Admin Stats
+//  Get User & Admin Stats
 router.get("/dashboard", getUserStats);
 
-// ✅ Route to add a new admin
+//  Route to add a new admin
 router.post('/add', async (req, res) => {
   const { name, password } = req.body;
 
