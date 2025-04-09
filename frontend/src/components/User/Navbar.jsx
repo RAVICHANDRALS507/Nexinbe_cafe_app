@@ -18,7 +18,6 @@ const Navbar = () => {
           <h1 className="text-2xl font-bold text-orange-500 leading-tight">
             Nexinbe Cafe
           </h1>
-          <p className="text-sm text-white">Welcome! <span className="font-semibold">{username}</span></p>
         </div>
 
         <nav className="flex items-center gap-6 text-gray-700 font-medium">
@@ -59,7 +58,6 @@ const Navbar = () => {
       <div className="flex md:hidden items-center justify-between px-6 py-4">
         <div>
           <h1 className="text-xl font-bold text-orange-500">Nexinbe Cafe</h1>
-          <p className="text-xs text-white">Welcome! <span className="font-semibold">{username}</span></p>
         </div>
         <button onClick={() => setIsOpen(true)}>
           <Menu className="text-gray-200" />
