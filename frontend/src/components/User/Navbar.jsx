@@ -62,7 +62,7 @@ const Navbar = () => {
           <p className="text-xs text-white">Welcome! <span className="font-semibold">{username}</span></p>
         </div>
         <button onClick={() => setIsOpen(true)}>
-          <Menu className="text-gray-700" />
+          <Menu className="text-gray-200" />
         </button>
       </div>
 
@@ -76,7 +76,7 @@ const Navbar = () => {
             "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2070&q=80')",
         }}
       >
-        <div className="absolute top-0 left-0 w-full h-full bg-white/50 rounded-l-2xl z-[-1]"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-white/80 rounded-l-2xl z-[-1]"></div>
 
         <div className="flex justify-between items-center mb-2">
           {/* <div>
