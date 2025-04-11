@@ -4,9 +4,12 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Navbar from "./Navbar"; // Add this import
+import Navbar from "../Navbar";
 
-//const BACKEND_URL = "http://localhost:5000"; // Make sure this is correct for your backend
+// Icons
+import { FaUser, FaEnvelope, FaPhoneAlt, FaLock } from 'react-icons/fa';
+
+//const BACKEND_URL = "http://localhost:5000";
 //const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
@@ -48,13 +51,7 @@ const Signup = () => {
     if (validateForm()) {
       setIsLoading(true);
       try {
-        const response = await axios.post(`${BACKEND_URL}/api/auth/register`, {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          number: formData.number,
-        });
-
+        const response = await axios.post(`${BACKEND_URL}/api/auth/register`, formData);
         if (response.data) {
           toast.success("🎉 Account created! Redirecting to login...");
           setTimeout(() => navigate('/login'), 2000);
@@ -76,30 +73,17 @@ const Signup = () => {
         className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center p-4 relative"
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2070&q=80')",
-          //paddingTop: '6rem', // Adjust padding to avoid overlap with Navbar
         }}
       >
         {/* Overlay */}
         <div className="absolute inset-0 bg-black opacity-40"></div>
-
-        {/* Logo */}
-        <div className="w-full max-w-md text-center mb-8 z-10">
-          <motion.h1
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-4xl font-bold text-white"
-          >
-            Nexinbe<span className="text-orange-500"> Cafe</span>
-          </motion.h1>
-        </div>
 
         {/* Form Card */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="w-full max-w-md z-10"
+          className="w-full max-w-md z-10 mt-20"
         >
           <div className="bg-white/90 rounded-2xl shadow-xl p-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
@@ -107,27 +91,63 @@ const Signup = () => {
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {[
-                { name: 'name', type: 'text', placeholder: 'Full Name' },
-                { name: 'email', type: 'email', placeholder: 'Email' },
-                { name: 'number', type: 'tel', placeholder: 'Phone Number' },
-                { name: 'password', type: showPassword ? 'text' : 'password', placeholder: 'Password' },
-              ].map((field) => (
-                <div key={field.name}>
-                  <input
-                    name={field.name}
-                    type={field.type}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                    placeholder={field.placeholder}
-                    className={`w-full px-4 py-2 rounded-lg border ${errors[field.name] ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 outline-none`}
-                    required={field.name !== 'name' ? true : false} // Adjust required as needed
-                  />
-                  {errors[field.name] && <p className="text-sm text-red-500 mt-1">{errors[field.name]}</p>}
-                </div>
-              ))}
+              {/* Name */}
+              <div className="relative">
+                <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" />
+                <input
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Full Name"
+                  className={`w-full pl-10 px-4 py-2 rounded-lg border ${errors.name ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 outline-none`}
+                />
+                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+              </div>
 
-              {/* Toggle Password Visibility */}
+              {/* Email */}
+              <div className="relative">
+                <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" />
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Email"
+                  className={`w-full pl-10 px-4 py-2 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 outline-none`}
+                />
+                {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+              </div>
+
+              {/* Phone Number */}
+              <div className="relative">
+                <FaPhoneAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" />
+                <input
+                  name="number"
+                  type="tel"
+                  value={formData.number}
+                  onChange={handleChange}
+                  placeholder="Phone Number"
+                  className={`w-full pl-10 px-4 py-2 rounded-lg border ${errors.number ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 outline-none`}
+                />
+                {errors.number && <p className="text-sm text-red-500 mt-1">{errors.number}</p>}
+              </div>
+
+              {/* Password */}
+              <div className="relative">
+                <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" />
+                <input
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Password"
+                  className={`w-full pl-10 px-4 py-2 rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 outline-none`}
+                />
+                {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
+              </div>
+
+              {/* Show/Hide Password */}
               <div className="text-right">
                 <button
                   type="button"
@@ -138,7 +158,7 @@ const Signup = () => {
                 </button>
               </div>
 
-              {/* Submit */}
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading}
@@ -166,7 +186,6 @@ const Signup = () => {
           <a href="#" className="text-orange-300 underline">Privacy Policy</a>.
         </p>
 
-        {/* Toast Container */}
         <ToastContainer
           position="bottom-right"
           autoClose={3000}

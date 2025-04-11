@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/Cartslice"; // Redux action to add item to cart
 import axios from "axios"; // For API requests
-import Navbar from "./Navbar"; // Top navigation bar
+import Navbar from "../Navbar"; // Top navigation bar
+import UserNavbar from "./UserNavbar"; // User Navbar
 import { useNavigate } from "react-router-dom"; // For navigation after order confirmation
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 
-//const BACKEND_URL = "http://localhost:5000"; // Backend base URL
-//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ssprojects.vercel.app";
+//const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
 const Menu = () => {
@@ -22,6 +23,7 @@ const Menu = () => {
   const [cartQuantities, setCartQuantities] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All"); // For category filter
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if user is logged in
 
   // Fetching menu items when component mounts
   useEffect(() => {
@@ -39,6 +41,12 @@ const Menu = () => {
       }
     };
     fetchMenuItems();
+
+    // Check if token exists in localStorage
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true); // User is logged in
+    }
   }, []);
 
   // Handle Add to Cart button click
@@ -107,12 +115,12 @@ const Menu = () => {
 
   return (
     <>
-      {/* Top Navbar */}
-      <Navbar />
+      {/* Conditionally render Navbar or UserNavbar */}
+      {isLoggedIn ? <UserNavbar /> : <Navbar />}
 
       {/* Background and Page Header */}
       <div
-        className="relative min-h-screen bg-cover bg-center px-4 pt-24 sm:px-6 sm:pt-28 lg:pt-32 pb-1" // Added pb-16 for margin-bottom
+        className="relative min-h-screen bg-cover bg-center px-4 pt-24 sm:px-6 sm:pt-28 lg:pt-32 pb-1"
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2070&q=80')",

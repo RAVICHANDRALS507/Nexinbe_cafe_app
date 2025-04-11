@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-import Navbar from './Navbar';
+import Navbar from '../Navbar';
+import UserNavbar from './UserNavbar'; // Import the UserNavbar component
 
-//const BACKEND_URL = "http://localhost:5000"; // Replace with your actual backend URL
-//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ssprojects.vercel.app";
+//const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
-
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,12 +14,12 @@ const Home = () => {
   const [loadingFeatured, setLoadingFeatured] = useState(true);
   const [errorFeatured, setErrorFeatured] = useState(null);
   const navigate = useNavigate(); // Initialize useNavigate
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if user is logged in
 
   const backgroundImages = [
     "https://th.bing.com/th/id/OIP.jJI3bTJ-diLfKDHb9-vwmwHaE8?rs=1&pid=ImgDetMain",
     "https://th.bing.com/th/id/OIP.43SgNn_c6tlgJVX7hmFO3wHaE7?w=626&h=417&rs=1&pid=ImgDetMain",
     "https://th.bing.com/th/id/OIP.y4p6mRVTwf2k7HR7p8f3uQHaE6?rs=1&pid=ImgDetMain",
-    // Add more image URLs here
   ];
   const transitionDuration = 500; // milliseconds
   const intervalDuration = 5000; // milliseconds
@@ -27,6 +27,9 @@ const Home = () => {
   const featuredRefreshInterval = 60 * 1000; // 1 minute in milliseconds
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token); // Check if token exists to determine login status
+
     setIsVisible(true);
   }, []);
 
@@ -86,16 +89,14 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      {isLoggedIn ? <UserNavbar /> : <Navbar />} {/* Show the appropriate navbar based on login status */}
 
       {/* Hero Section */}
       <div className="relative h-screen md:h-[800px] overflow-hidden"> {/* Increased height */}
         {backgroundImages.map((imageUrl, index) => (
           <div
             key={index}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-${transitionDuration} ease-in-out ${
-              index === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            } ${imageMarginTop}`}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-${transitionDuration} ease-in-out ${index === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'} ${imageMarginTop}`}
             style={{
               backgroundImage: `url('${imageUrl}')`,
               backgroundSize: 'cover',
@@ -211,4 +212,5 @@ const Home = () => {
     </div>
   );
 };
+
 export default Home;

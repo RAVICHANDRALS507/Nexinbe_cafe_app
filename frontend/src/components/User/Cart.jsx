@@ -2,14 +2,26 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, clearCart, updateQuantity } from "../../redux/Cartslice"; // Ensure `clearCart` is imported
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "../Navbar";
+import UserNavbar from "./UserNavbar"; // Import the UserNavbar
 import { motion, AnimatePresence } from "framer-motion";
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart); // Assuming `state.cart` holds the cart items
+  const cartItems = useSelector((state) => state.cart.cartItems);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if user is logged in
+
+  // Check login status when the component mounts
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Check if token exists in localStorage
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   // Calculate total price
   const total = cartItems.reduce(
@@ -41,7 +53,8 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      {/* Conditionally render UserNavbar if logged in, else render Navbar */}
+      {isLoggedIn ? <UserNavbar /> : <Navbar />}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-12"> {/* Add mt-12 here to add margin-top */}
         <div className="flex flex-col md:flex-row gap-8">

@@ -36,7 +36,8 @@ app.use(express.json()); // Handles JSON data
 
 //  Route Setup
 app.use("/api/admin", adminRoutes);  
-app.use("/api/auth", userRoutes);  // No multer here, handle in routes
+// app.use("/api/auth", userRoutes);  // No multer here, handle in routes
+app.use("/api/user", userRoutes);
 // app.use("/api/stock", stockRoutes);  // No multer here, handle in routes
 app.use("/api/menu", menuRoutes);  // No multer here, handle in routes
 //app.use('/api/menuitems', menuItemsRouter);

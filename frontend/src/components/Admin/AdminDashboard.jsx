@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaUsers, FaUserShield, FaBoxes, FaPlusCircle, FaTrash, FaEdit, FaTimes } from "react-icons/fa";
+import AdminNavbar from "./AdminNavbar";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // ✅ Backend API URL
 //const BACKEND_URL = "http://localhost:5000";
-const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
-//const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -230,6 +231,8 @@ const AdminDashboard = () => {
   };
 
   return (
+    <>
+      {/* <AdminNavbar />  */}
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6">
       {/* Dashboard Header */}
       <div className="max-w-7xl mx-auto mb-4 sm:mb-8 px-2">
@@ -645,6 +648,7 @@ const AdminDashboard = () => {
         theme="colored"
       />
     </div>
+    </>
   );
 };
 
