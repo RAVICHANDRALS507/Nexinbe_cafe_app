@@ -9,10 +9,9 @@ const userRoutes = require("./routes/userRoutes");
 //const stockRoutes = require("./routes/stockRoutes"); // Import stock routes
 
 const app = express();
-const upload = multer(); // Initialize Multer
+const upload = multer(); 
 
 //  Enable CORS
-
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -27,7 +26,6 @@ app.use(cors({
 // Add this line after CORS middleware
 app.options('*', cors());
 
-// // Add OPTIONS preflight handler
 // app.options('*', cors());
 
 //  Middleware (Correct Order)
@@ -47,7 +45,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-//  MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ MongoDB connected"))
