@@ -5,8 +5,6 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from "../Navbar";
-
-// Icons
 import { FaUser, FaEnvelope, FaPhoneAlt, FaLock } from 'react-icons/fa';
 
 // ✅ Backend API URL
@@ -54,7 +52,7 @@ const Signup = () => {
       try {
         const response = await axios.post(`${BACKEND_URL}/api/auth/register`, formData);
         if (response.data) {
-          toast.success("🎉 Account created! Redirecting to login...");
+          toast.success("Account created! Redirecting to login...");
           setTimeout(() => navigate('/login'), 2000);
         }
       } catch (error) {
