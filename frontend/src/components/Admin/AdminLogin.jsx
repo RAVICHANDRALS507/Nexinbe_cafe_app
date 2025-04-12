@@ -7,13 +7,18 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../Navbar";
 
 // ✅ Backend API URL
-const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app"; // Your backend URL
+//const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
-const AdminLogin = () => {
-  const [formData, setFormData] = useState({ name: "", password: "" });
+const AdminLogin = ({ setIsAdminLoggedIn }) => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: '',
+    password: ''
+  });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,10 +43,11 @@ const AdminLogin = () => {
       }
 
       localStorage.setItem("adminToken", data.token);
-      toast.success("Login successful! Redirecting...");
+      setIsAdminLoggedIn(true); // Update the admin login state
+      toast.success("Login successful! Redirecting...", {autoClose:3000});
 
       setTimeout(() => {
-        navigate("/admin-dashboard");
+        navigate("/admin-panel");
       }, 1500);
     } catch (err) {
       setError(err.message);

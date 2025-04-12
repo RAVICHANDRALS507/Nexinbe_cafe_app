@@ -1,36 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import { FaEnvelope } from 'react-icons/fa';
-import { FaLock } from 'react-icons/fa';
+import { FaUser, FaLock } from 'react-icons/fa';
 import Navbar from "../Navbar";
 
+// ✅ Backend API URL
 //const BACKEND_URL = "http://localhost:5000";
 //const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
+
 
 const Login = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+      navigate('/menu');
+    }
+  }, [navigate, setIsLoggedIn]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
     setLoginError('');
   };
 
   const validateForm = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!emailRegex.test(formData.email)) newErrors.email = 'Please enter a valid email';
+
     if (!formData.password) newErrors.password = 'Password is required';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -44,24 +58,27 @@ const Login = ({ setIsLoggedIn }) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
+          credentials: 'include'
         });
-        const data = await response.json();
 
-        if (response.ok) {
-          localStorage.setItem('token', data.token);
-          toast.success("🎉 Login successful!");
-          setIsLoggedIn(true);
-          setTimeout(() => navigate('/menu'), 500);
-        } else {
-          if (data.error?.includes('user not found')) {
-            toast.error("It seems like you don't have an account. Please sign up first!");
+        const contentType = response.headers.get("Content-Type");
+        if (!response.ok) {
+          if (contentType && contentType.includes("application/json")) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Login failed');
           } else {
-            toast.error(data.error || 'Invalid email or password');
+            throw new Error("Unexpected response format from server.");
           }
         }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        setIsLoggedIn(true);
+        toast.success("🎉 Login successful! Redirecting...", { autoClose: 3000 });
+        navigate('/menu');
       } catch (error) {
         console.error("❌ Error during login:", error);
-        toast.error("Failed to connect to server!");
+        toast.error(error.message || "Failed to connect to server!");
       } finally {
         setIsLoading(false);
       }
@@ -81,7 +98,20 @@ const Login = ({ setIsLoggedIn }) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-md mt-16">
+      <div className="relative z-10 w-full max-w-md">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-center mb-8"
+        >
+          <Link to="/" className="inline-block">
+            <h1 className="text-4xl font-bold text-white">
+              {/* Nexinbe <span className="text-orange-500">Cafe</span> */}
+            </h1>
+          </Link>
+        </motion.div>
+
         {/* Login Card */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -102,41 +132,43 @@ const Login = ({ setIsLoggedIn }) => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
+            {/* Email Field */}
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
-              <motion.div whileTap={{ scale: 0.995 }} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" />
-                </div>
+              <div className="relative">
+                <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full pl-10 px-4 py-2 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 outline-none`}
+                  className={`w-full pl-10 py-3 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300`}
                   placeholder="Enter your email"
                   required
                 />
-              </motion.div>
+              </div>
               {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
             </div>
 
-            {/* Password */}
-            <div className="relative">
+            {/* Password Field */}
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-2">Password</label>
+              <div className="relative">
                 <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" />
                 <input
+                  type="password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Password"
-                  className={`w-full pl-10 px-4 py-2 rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 outline-none`}
+                  className={`w-full pl-10 py-3 rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300`}
+                  placeholder="Enter your password"
+                  required
                 />
-                {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
               </div>
+              {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
+            </div>
 
-            {/* Submit */}
+            {/* Submit Button */}
             <motion.button
               type="submit"
               disabled={isLoading}

@@ -23,23 +23,23 @@ const getFormattedDateTime = () => {
 // ✅ Register a new user
 exports.registerUser = async (req, res) => {
   const { name, email, number, password } = req.body;
-  console.log("🔍 Incoming Registration Data:", req.body);
+  console.log("Incoming Registration Data:", req.body);
 
   try {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
-    console.log("👤 Checking if user exists:", existingUser);
+    console.log("Checking if user exists:", existingUser);
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("🔐 Password hashed successfully");
+    console.log("Password hashed successfully");
 
     // Get formatted date and time
     const { date, time } = getFormattedDateTime();
-    console.log(`📅 Date: ${date}, ⏰ Time: ${time}`);
+    console.log(`Date: ${date}, ⏰ Time: ${time}`);
 
     // Create a new user
     const newUser = new User({
@@ -50,13 +50,13 @@ exports.registerUser = async (req, res) => {
       createdAtDate: date,
       createdAtTime: time,
     });
-    console.log("✅ New User Object Created:", newUser);
+    console.log("New User Object Created:", newUser);
 
     await newUser.save();
-    console.log("✅ User registered successfully!");
+    console.log("User registered successfully!");
     res.status(201).json({ message: "User registered successfully!" });
   } catch (error) {
-    console.error("❌ Error during registration:", error);
+    console.error("Error during registration:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -64,19 +64,19 @@ exports.registerUser = async (req, res) => {
 // ✅ Login user
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log("🔍 Incoming Login Data:", req.body);
+  console.log("Incoming Login Data:", req.body);
 
   try {
     // Check if user exists
     const user = await User.findOne({ email });
-    console.log("👤 Found User:", user);
+    console.log("Found User:", user);
     if (!user) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("🔑 Password Match:", isMatch);
+    console.log("Password Match:", isMatch);
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
@@ -85,11 +85,11 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    console.log("✅ JWT Token Generated Successfully");
+    console.log("JWT Token Generated Successfully");
 
     res.status(200).json({ token, message: "Login successful" });
   } catch (error) {
-    console.error("❌ Error during login:", error);
+    console.error("Error during login:", error);
     res.status(500).json({ error: "Server error" });
   }
 };

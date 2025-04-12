@@ -6,8 +6,6 @@ const User = require("../models/User"); // Import your User model
 
 // Register User Route
 router.post("/register", registerUser);
-
-// Login User Route
 router.post("/login", loginUser);
 
 router.get("/profile", async (req, res) => {

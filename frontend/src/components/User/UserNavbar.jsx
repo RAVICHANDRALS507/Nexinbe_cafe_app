@@ -12,7 +12,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-toastify";
 
-const UserNavbar = () => {
+const UserNavbar = ({ setIsLoggedIn }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,12 +24,15 @@ const UserNavbar = () => {
   );
 
   const handleLogout = () => {
-    localStorage.clear();
-    toast.success("Logged out successfully", {
-      position: "top-right",
-      autoClose: 3000,
-    });
-    navigate("../Navbar");
+    localStorage.removeItem('token');
+    if (setIsLoggedIn) {
+      setIsLoggedIn(false);
+    }
+    toast.success("Logged out successfully");
+    setTimeout(() => {
+      navigate('/home');
+      window.location.reload(); // Force reload to update state
+    }, 1000);
   };
 
   const navLinks = [

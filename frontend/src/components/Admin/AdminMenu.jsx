@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const PLACEHOLDER_IMAGE =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGHSURBVHic7ZsxTsMwFIb/Z2NBYkGq1IXF9AacA3EGzkA5A0dgYOIYHIFDcA5gY2FhQQiJpVJ3kNrBVGKIkzhO47xn9/ukN9WJ/ed7sp3IgOd/UZoTRLQC8ADgyx1XB3zO5YjIA+AZwMo0TRfOuZ/guQEwf+eoEfacc+vw4LEwJz/GrwEAd+PGqRcAiwC4HT9OvQDAMoQ4TqB6AUQL+JAgrEU1vbgEZg0vgVnDS2DW8BKYNbwEZg0vgVnDS2DW8BKYNbwEZo0+JagA7AFsAZQAyu7YAng0c3PODfbhr0gPfQLwbOZSSGEJ1ABWZq6EFBT+ZZhLIgGFzwG5NBJQ+ByQSyQBhc8BuVQSUPgckEsmAYXPAbmJJEhxn7AE8GbmUkhB4deWuSQSUPgckEsjAYXPAbkkElD4HJBLIQGFzwG5BBKkuN0tAbwDeDFzKaSQQm51ANYALgF8dMclgA0uvePjOM4JRHQBoALwCeDaOfcdPDf/zvU4y865r/DhF6ys7wclKe1qAAAAAElFTkSuQmCC";
 
+// ✅ Backend API URL
 //const BACKEND_URL = "http://localhost:5000";
 //const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";

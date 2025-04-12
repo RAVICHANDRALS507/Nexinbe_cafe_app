@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import Navbar from '../Navbar';
 import UserNavbar from './UserNavbar'; // Import the UserNavbar component
 
+// ✅ Backend API URL
 //const BACKEND_URL = "http://localhost:5000";
 //const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
@@ -89,7 +90,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {isLoggedIn ? <UserNavbar /> : <Navbar />} {/* Show the appropriate navbar based on login status */}
+      {isLoggedIn ? <UserNavbar setIsLoggedIn={setIsLoggedIn} /> : <Navbar />} {/* Show the appropriate navbar based on login status */}
 
       {/* Hero Section */}
       <div className="relative h-screen md:h-[800px] overflow-hidden"> {/* Increased height */}

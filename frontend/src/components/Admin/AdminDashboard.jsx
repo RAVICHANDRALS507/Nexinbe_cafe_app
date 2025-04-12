@@ -559,12 +559,12 @@ const AdminDashboard = () => {
                                 >
                                   Update
                                 </button>
-                                <button
+                                {/* <button
                                   onClick={() => deleteStockItem(item._id)}
                                   className="text-red-600 hover:text-red-900"
                                 >
                                   <FaTrash className="inline-block mr-1" /> Delete
-                                </button>
+                                </button> */}
                               </>
                             )}
                           </td>
