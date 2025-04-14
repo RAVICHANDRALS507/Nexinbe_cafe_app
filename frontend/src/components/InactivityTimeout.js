@@ -8,20 +8,27 @@ const InactivityTimeout = () => {
 
   // Function to clear token and redirect after inactivity
   const logoutOnInactivity = () => {
-    localStorage.removeItem('token');  // Remove token from local storage
-    //alert('You have been logged out due to inactivity.');
-    toast.error('You have been logged out due to inactivity.');  // Show toast notification
-    navigate('/login');  // Redirect to login page or home page
+    // Check if user is not an admin
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminToken) {
+      localStorage.removeItem('token');
+      toast.error('You have been logged out due to inactivity.');
+      navigate('/login');
+    }
   };
 
-  // Inactivity timer (5 minutes = 300000ms)
-  const INACTIVITY_TIMEOUT = 5 * 60 * 1000;
+  // Inactivity timer (1 minute = 60000ms)
+  const INACTIVITY_TIMEOUT = 1 * 60 * 1000;
 
   useEffect(() => {
-    // Set a timeout that will log the user out after inactivity
+    // Only set up inactivity timer if user is not an admin
+    const adminToken = localStorage.getItem('adminToken');
+    if (adminToken) {
+      return; // Exit early if admin is logged in
+    }
+
     let inactivityTimer;
 
-    // Reset the timer whenever user interacts with the page
     const resetTimer = () => {
       if (inactivityTimer) {
         clearTimeout(inactivityTimer);
@@ -29,23 +36,19 @@ const InactivityTimeout = () => {
       inactivityTimer = setTimeout(logoutOnInactivity, INACTIVITY_TIMEOUT);
     };
 
-    // List of events that should reset the inactivity timer
     const events = ['mousemove', 'keydown', 'click', 'scroll'];
 
-    // Attach event listeners for activity detection
     events.forEach(event => {
       window.addEventListener(event, resetTimer);
     });
 
-    // Start the timer immediately on page load
     resetTimer();
 
-    // Clean up event listeners on component unmount
     return () => {
       events.forEach(event => {
         window.removeEventListener(event, resetTimer);
       });
-      clearTimeout(inactivityTimer);  // Clear timer on cleanup
+      clearTimeout(inactivityTimer);
     };
   }, [navigate]);
 

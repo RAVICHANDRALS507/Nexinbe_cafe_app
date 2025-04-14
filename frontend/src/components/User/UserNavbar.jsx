@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -12,10 +12,42 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-toastify";
 
+// ✅ Backend API URL
+//const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
+
 const UserNavbar = ({ setIsLoggedIn }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/auth/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user profile');
+        }
+
+        const data = await response.json();
+        setUserName(data.name);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const cartItems = useSelector((state) => state.cart?.cartItems || []);
   const totalQuantity = cartItems.reduce(
@@ -60,6 +92,9 @@ const UserNavbar = ({ setIsLoggedIn }) => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-xl font-bold text-orange-500">Nexinbe Cafe</h1>
+          {userName && (
+            <p className="text-sm text-gray-400">Welcome, {userName}</p>
+          )}
         </div>
 
         <button className="md:hidden cursor-pointer" onClick={() => setIsOpen(!isOpen)}>

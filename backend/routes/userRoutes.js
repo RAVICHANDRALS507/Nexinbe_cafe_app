@@ -20,16 +20,15 @@ router.get("/profile", async (req, res) => {
 
     // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.userId; // Extract userId from the token payload
 
     // Fetch the user from the database
-    const user = await User.findById(userId).select("name email"); // Fetch only the name and email fields
+    const user = await User.findById(decoded.userId).select("name email"); // Fetch only the name and email fields
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the user's name
-    res.json({ name: user.name });
+    // Return the user's name and email
+    res.json(user);
   } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).json({ message: "Server error" });
