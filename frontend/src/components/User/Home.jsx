@@ -90,8 +90,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {isLoggedIn ? <UserNavbar setIsLoggedIn={setIsLoggedIn} /> : <Navbar />} {/* Show the appropriate navbar based on login status */}
-
+      {isLoggedIn ? <UserNavbar setIsLoggedIn={setIsLoggedIn} /> : <Navbar />} 
       {/* Hero Section */}
       <div className="relative h-screen md:h-[800px] overflow-hidden"> {/* Increased height */}
         {backgroundImages.map((imageUrl, index) => (

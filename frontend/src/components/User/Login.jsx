@@ -74,10 +74,10 @@ const Login = ({ setIsLoggedIn }) => {
         const data = await response.json();
         localStorage.setItem('token', data.token);
         setIsLoggedIn(true);
-        toast.success("🎉 Login successful! Redirecting...", { autoClose: 3000 });
+        toast.success("Login successful! Redirecting...", { autoClose: 3000 });
         navigate('/menu');
       } catch (error) {
-        console.error("❌ Error during login:", error);
+        console.error("Error during login:", error);
         toast.error(error.message || "Failed to connect to server!");
       } finally {
         setIsLoading(false);

@@ -36,8 +36,15 @@ const Signup = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!emailRegex.test(formData.email)) newErrors.email = 'Invalid email';
-    if (!formData.password) newErrors.password = 'Password is required';
-    else if (formData.password.length < 6) newErrors.password = 'Min 6 characters';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+  else if (!emailRegex.test(formData.email)) newErrors.email = 'Invalid email';
+
+  const password = formData.password;
+  const passwordRegex = /^(?=.*[A-Z]).{6,}$/;
+  if (!password) newErrors.password = 'Password is required';
+  else if (!passwordRegex.test(password)) {
+    newErrors.password = 'Password must be at least 6 characters and include one uppercase letter';
+  }
     const phoneRegex = /^\d{10}$/;
     if (!formData.number.trim()) newErrors.number = 'Phone is required';
     else if (!phoneRegex.test(formData.number)) newErrors.number = 'Invalid phone number';
@@ -61,7 +68,7 @@ const Signup = () => {
         setIsLoading(false);
       }
     } else {
-      toast.error("Please correct the form errors.");
+      toast.error("Please fill the complete form.");
     }
   };
 
@@ -133,18 +140,24 @@ const Signup = () => {
               </div>
 
               {/* Password */}
-              <div className="relative">
-                <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" />
-                <input
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Password"
-                  className={`w-full pl-10 px-4 py-2 rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 outline-none`}
-                />
-                {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
-              </div>
+              {/* Password */}
+<div className="relative">
+  <div className="relative">
+    <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-500" />
+    <input
+      name="password"
+      type={showPassword ? 'text' : 'password'}
+      value={formData.password}
+      onChange={handleChange}
+      placeholder="Password"
+      className={`w-full pl-10 px-4 py-2 rounded-lg border ${
+        errors.password ? 'border-red-500' : 'border-gray-300'
+      } focus:ring-2 focus:ring-orange-500 outline-none`}
+    />
+  </div>
+  {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
+</div>
+
 
               {/* Show/Hide Password */}
               <div className="text-right">
