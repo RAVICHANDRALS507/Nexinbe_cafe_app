@@ -18,7 +18,8 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://nexinbe-cafe-app-8gyx.vercel.app',
-    'https://nexinbe-cafe-app.vercel.app'
+    'https://nexinbe-cafe-app.vercel.app',
+    'https://nexinbe-cafe-app-8gyx-git-main-ravichandra-l-ss-projects.vercel.app',
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
