@@ -3,10 +3,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const multer = require("multer");
+
+
 const adminRoutes = require("./routes/adminRoutes");
 const menuRoutes = require("./routes/menuRoutes");
 const userRoutes = require("./routes/userRoutes");
-//const stockRoutes = require("./routes/stockRoutes"); // Import stock routes
+const razorpayRoutes = require("./routes/razorpayRoutes");
 
 const app = express();
 const upload = multer(); 
@@ -35,8 +37,8 @@ app.use(express.json()); // Handles JSON data
 //  Route Setup
 app.use("/api/admin", adminRoutes);  
 app.use("/api/auth", userRoutes);  
-// app.use("/api/stock", stockRoutes); 
 app.use("/api/menu", menuRoutes);  
+app.use("/api/razorpay", razorpayRoutes);
 //app.use('/api/menuitems', menuItemsRouter);
 
 // Add an error handler

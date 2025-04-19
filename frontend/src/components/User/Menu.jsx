@@ -1,40 +1,38 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/Cartslice"; // Redux action to add item to cart
-import axios from "axios"; // For API requests
-import Navbar from "../Navbar"; // Top navigation bar
-import UserNavbar from "./UserNavbar"; // User Navbar
-import { useNavigate } from "react-router-dom"; // For navigation after order confirmation
+import { addToCart } from "../../redux/Cartslice";
+import axios from "axios";
+import Navbar from "../Navbar";
+import UserNavbar from "./UserNavbar";
+import { useNavigate } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 
 // ✅ Backend API URL
-//const BACKEND_URL = "http://localhost:5000";
-//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+// const BACKEND_URL = "http://localhost:5000";
+// const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
 const Menu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // States to manage menu items, messages, loading status, cart quantity, etc.
   const [menuItems, setMenuItems] = useState([]);
   const [message, setMessage] = useState({});
   const [cartQuantities, setCartQuantities] = useState({});
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("All"); // For category filter
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if user is logged in
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Fetching menu items when component mounts
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/api/menu`);
         setTimeout(() => {
-          setMenuItems(response.data); // Save fetched items to state
+          setMenuItems(response.data);
           setLoading(false);
-        }, 1000); // Simulated loading delay
+        }, 1000);
       } catch (error) {
         console.error("Error fetching menu items:", error);
         setMessage({ error: "Failed to load menu items" });
@@ -43,14 +41,12 @@ const Menu = () => {
     };
     fetchMenuItems();
 
-    // Check if token exists in localStorage
     const token = localStorage.getItem("token");
     if (token) {
-      setIsLoggedIn(true); // User is logged in
+      setIsLoggedIn(true);
     }
   }, []);
 
-  // Handle Add to Cart button click
   const handleAddToCart = (item) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -59,13 +55,15 @@ const Menu = () => {
       return;
     }
     dispatch(addToCart({ ...item, quantity: cartQuantities[item._id] || 1 }));
-    setMessage((prev) => ({ ...prev, [item._id]: `${cartQuantities[item._id] || 1}x ${item.name} added to cart!` }));
+    setMessage((prev) => ({
+      ...prev,
+      [item._id]: `${cartQuantities[item._id] || 1}x ${item.name} added to cart!`,
+    }));
     setTimeout(() => {
       setMessage((prev) => ({ ...prev, [item._id]: "" }));
     }, 3000);
   };
 
-  // Handle Order Now button click
   const handleOrderNow = (item) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -74,15 +72,17 @@ const Menu = () => {
       return;
     }
     toast.info(`${item.name} has been ordered! Proceeding to checkout.`);
-    // Add navigation to checkout or order confirmation page here
+    navigate('/payment', {
+      state: {
+        amount: item.price * (cartQuantities[item._id] || 1),
+      },
+    });
   };
 
-  // Quantity increment for cart
   const incrementQuantity = (id) => {
     setCartQuantities((prev) => ({ ...prev, [id]: (prev[id] || 1) + 1 }));
   };
 
-  // Quantity decrement for cart (minimum 1)
   const decrementQuantity = (id) => {
     setCartQuantities((prev) => ({
       ...prev,
@@ -90,16 +90,13 @@ const Menu = () => {
     }));
   };
 
-  // Filter items by category
   const filteredItems =
     activeCategory === "All"
       ? menuItems
       : menuItems.filter((item) => item.category === activeCategory);
 
-  // Create a list of categories from menu items
   const categories = ["All", ...new Set(menuItems.map((item) => item.category))];
 
-  // Skeleton component while loading
   const MenuItemSkeleton = () => (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse transition-all duration-300">
       <div className="relative h-28 sm:h-36 bg-gray-200"></div>
@@ -116,10 +113,8 @@ const Menu = () => {
 
   return (
     <>
-      {/* Conditionally render Navbar or UserNavbar */}
       {isLoggedIn ? <UserNavbar /> : <Navbar />}
 
-      {/* Background and Page Header */}
       <div
         className="relative min-h-screen bg-cover bg-center px-4 pt-24 sm:px-6 sm:pt-28 lg:pt-32 pb-1"
         style={{
@@ -127,12 +122,9 @@ const Menu = () => {
             "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2070&q=80')",
         }}
       >
-        {/* Dark gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/80 backdrop-blur-sm z-0"></div>
 
-        {/* Main Content */}
         <div className="relative z-10 container mx-auto">
-          {/* Title */}
           <div className="text-center mb-6">
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 drop-shadow">
               Explore Our <span className="text-orange-500">Menu</span>
@@ -142,15 +134,14 @@ const Menu = () => {
             </p>
           </div>
 
-          {/* Category Filters */}
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => {
-                  setLoading(true); // Show loader while changing category
+                  setLoading(true);
                   setActiveCategory(category);
-                  setTimeout(() => setLoading(false), 400); // Simulate loading
+                  setTimeout(() => setLoading(false), 400);
                 }}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 backdrop-blur-sm ${
                   activeCategory === category
@@ -163,16 +154,13 @@ const Menu = () => {
             ))}
           </div>
 
-          {/* Error Message */}
           {message.error && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
               <p>{message.error}</p>
             </div>
           )}
 
-          {/* Menu Items Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 px-1 mb-8">
-            {/* Show loading skeletons */}
             {loading ? (
               Array(8)
                 .fill()
@@ -183,7 +171,6 @@ const Menu = () => {
                   key={item._id}
                   className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col"
                 >
-                  {/* Item Image */}
                   <div className="relative h-28 sm:h-36 overflow-hidden">
                     <img
                       src={
@@ -202,7 +189,6 @@ const Menu = () => {
                     </div>
                   </div>
 
-                  {/* Item Info and Buttons */}
                   <div className="p-2 sm:p-3 flex flex-col flex-grow">
                     <h2 className="text-sm sm:text-base font-semibold text-gray-800 mb-1 line-clamp-1">
                       {item.name}
@@ -211,54 +197,50 @@ const Menu = () => {
                       {item.description}
                     </p>
 
-                    {/* Quantity Selector */}
                     <div className="flex items-center justify-between bg-gray-50 rounded-lg px-2 py-1 mb-3">
                       <button
                         onClick={() => decrementQuantity(item._id)}
-                        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-orange-500 hover:text-white flex items-center justify-center text-gray-600"
+                        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-orange-500 hover:text-white text-gray-700 text-xl font-bold flex items-center justify-center"
                       >
                         -
                       </button>
-                      <span className="font-medium text-gray-700">
+                      <span className="text-sm font-medium">
                         {cartQuantities[item._id] || 1}
                       </span>
                       <button
                         onClick={() => incrementQuantity(item._id)}
-                        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-orange-500 hover:text-white flex items-center justify-center text-gray-600"
+                        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-orange-500 hover:text-white text-gray-700 text-xl font-bold flex items-center justify-center"
                       >
                         +
                       </button>
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="space-y-2">
-                      <button
-                        onClick={() => handleAddToCart(item)}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm py-2 rounded-lg font-medium transition-all duration-300"
-                      >
-                        Add to Cart
-                      </button>
-                      <button
-                        onClick={() => handleOrderNow(item)}
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm py-2 rounded-lg font-medium transition-all duration-300"
-                      >
-                        Order Now
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => handleAddToCart(item)}
+                      className="bg-green-100 text-green-700 hover:bg-green-200 text-xs sm:text-sm font-semibold rounded-md py-1.5 px-3 mb-1 transition-all duration-300"
+                    >
+                      Add to Cart
+                    </button>
 
-                    {/* Confirmation Message */}
+                    <button
+                      onClick={() => handleOrderNow(item)}
+                      className="bg-orange-500 text-white hover:bg-orange-600 text-xs sm:text-sm font-semibold rounded-md py-1.5 px-3 transition-all duration-300"
+                    >
+                      Order Now
+                    </button>
+
                     {message[item._id] && (
-                      <p className="text-green-400 text-xs text-center mt-2 animate-bounce">
+                      <div className="text-xs text-green-600 mt-1">
                         {message[item._id]}
-                      </p>
+                      </div>
                     )}
                   </div>
                 </div>
               ))
             ) : (
-              <div className="col-span-full text-center py-10">
-                <p className="text-white text-lg">No items found in this category</p>
-              </div>
+              <p className="text-white text-center col-span-full">
+                No menu items available in this category.
+              </p>
             )}
           </div>
         </div>
