@@ -11,9 +11,12 @@ import Payment from "./components/User/Payment";
 import Login from "./components/User/Login"; 
 import AdminLogin from "./components/Admin/AdminLogin"; 
 import AdminPanel from "./components/Admin/AdminPanel"; 
+import Bill from "./components/User/Bill"; 
 import InactivityTimeout from "./components/InactivityTimeout"; 
 import { ToastContainer, toast } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css"; 
+
+
 // ProtectedRoute component for user auth 
 const ProtectedRoute = ({ children }) => { 
 const isLoggedIn = localStorage.getItem("token"); 
@@ -81,6 +84,7 @@ function App() {
         <Route path="/" element={<Navigate to="/home" replace />} /> 
         <Route path="/home" element={<Home />} /> 
         <Route path="/signup" element={<Signup />} /> 
+        <Route path="bill" element={<Bill/>}/>
         <Route  
           path="/login"  
           element={ 
