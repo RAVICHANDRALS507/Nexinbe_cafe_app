@@ -1,22 +1,2 @@
-while local setup do this changes
-
-1.In BACKEND Server.js : 
-    origin: ['https://nexinbe-cafe-app-s1a1.vercel.app', 'https://nexinbe-cafe-app-drab.vercel.app'],  
-
-  CHANGE THE ABOVE CODE TO 👇
-    origin: "*",  
-
-
-2.In FRONTEND AdminLogin.jsx :
-    "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app/api/admin/login"
-
-
-  CHANGE THE ABOVE CODE TO 👇
-    "http://localhost:5000/api/admin/login"
-
-
-3.IN FRONTEND AdminMenu.jsx :
-    "http://localhost:5000/api/menu/add"
-
- CHANGE THE ABOVE CODE TO 👇
-    "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app/api/menu/add"
+RAZORPAY_KEY_ID=rzp_test_u7TfmRPwyrMobx 
+RAZORPAY_KEY_SECRET=BjKaohoSpbx3nNexbLElHx4n 

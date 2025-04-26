@@ -26,16 +26,16 @@ const AdminPanel = ({ onLogout }) => {
       <div className="absolute inset-0 bg-black opacity-50"></div>
 
       <div className="relative">
-        <div className="p-6">
+        <div className="p-0">
           <h2 className="text-2xl font-bold text-white text-center mb-4">
             Admin Dashboard
           </h2>
 
           {/* Navigation Tabs */}
-          <div className="flex justify-center space-x-4 mb-6">
+          <div className="flex flex-wrap justify-center gap-4 mb-6">
             <button
               onClick={() => setActiveSection("dashboard")}
-              className={`px-4 py-2 rounded ${
+              className={`px-4 py-2 rounded w-full sm:w-auto ${
                 activeSection === "dashboard"
                   ? "bg-blue-500 text-white"
                   : "bg-gray-300"
@@ -45,7 +45,7 @@ const AdminPanel = ({ onLogout }) => {
             </button>
             <button
               onClick={() => setActiveSection("orders")}
-              className={`px-4 py-2 rounded ${
+              className={`px-4 py-2 rounded w-full sm:w-auto ${
                 activeSection === "orders"
                   ? "bg-blue-500 text-white"
                   : "bg-gray-300"
@@ -56,7 +56,7 @@ const AdminPanel = ({ onLogout }) => {
 
             <button
               onClick={() => setActiveSection("menu")}
-              className={`px-4 py-2 rounded ${
+              className={`px-4 py-2 rounded w-full sm:w-auto ${
                 activeSection === "menu" ? "bg-blue-500 text-white" : "bg-gray-300"
               }`}
             >
@@ -65,7 +65,7 @@ const AdminPanel = ({ onLogout }) => {
           </div>
 
           {/* Render Sections */}
-          <div className="border p-4 rounded-lg shadow bg-white">
+          <div className="border p-4 rounded-lg shadow bg-white w-full max-w-full sm:max-w-5xl md:max-w-7xl lg:max-w-screen-xl xl:max-w-screen-2xl 2xl:max-w-[2000px] mx-auto">
             {activeSection === "dashboard" && <AdminDashboard />}
             {activeSection === "orders" && <AdminOrders />}
             {activeSection === "menu" && <AdminMenu />}
