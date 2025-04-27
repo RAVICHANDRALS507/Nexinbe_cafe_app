@@ -14,7 +14,7 @@
 //   unit: {
 //     type: String,
 //     required: true,
-//     enum: ["kg", "liters", "units", "pcs"], // Define valid units
+//     enum: ["kg", "liters", "units", "plates"], // Define valid units
 //   },
 //   pricePerUnit: {
 //     type: Number,

@@ -215,19 +215,20 @@ const Menu = () => {
                       </button>
                     </div>
 
-                    <button
-                      onClick={() => handleAddToCart(item)}
-                      className="bg-green-100 text-green-700 hover:bg-green-200 text-xs sm:text-sm font-semibold rounded-md py-1.5 px-3 mb-1 transition-all duration-300"
-                    >
-                      Add to Cart
-                    </button>
-
-                    <button
-                      onClick={() => handleOrderNow(item)}
-                      className="bg-orange-500 text-white hover:bg-orange-600 text-xs sm:text-sm font-semibold rounded-md py-1.5 px-3 transition-all duration-300"
-                    >
-                      Order Now
-                    </button>
+                    <div className="flex gap-2 mb-1">
+                      <button
+                        onClick={() => handleAddToCart(item)}
+                        className="bg-green-100 text-green-700 hover:bg-green-200 text-xs sm:text-sm font-semibold rounded-md py-1.5 px-3 transition-all duration-300 flex-1"
+                      >
+                        Add to Cart
+                      </button>
+                      <button
+                        onClick={() => handleOrderNow(item)}
+                        className="bg-orange-500 text-white hover:bg-orange-600 text-xs sm:text-sm font-semibold rounded-md py-1.5 px-3 transition-all duration-300 flex-1"
+                      >
+                        Order Now
+                      </button>
+                    </div>
 
                     {message[item._id] && (
                       <div className="text-xs text-green-600 mt-1">

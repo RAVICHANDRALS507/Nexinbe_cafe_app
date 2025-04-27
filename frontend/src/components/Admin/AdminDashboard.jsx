@@ -550,7 +550,7 @@ const AdminDashboard = () => {
                                     <option value="kg">kg</option>
                                     <option value="Liters">Liters</option>
                                     <option value="Units">Units</option>
-                                    <option value="pcs">pcs</option>
+                                    <option value="plates">plates</option>
                                     <option value="Other">Other</option>
                                   </select>
                                 ) : (

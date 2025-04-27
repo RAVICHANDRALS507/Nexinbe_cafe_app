@@ -28,7 +28,7 @@ const menuItemSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true,
-    enum: ['kg', 'liters', 'units', 'pcs', 'others']
+    enum: ['kg', 'liters', 'units', 'plates', 'others']
   },
   image: {
     type: String,  // Store base64 string

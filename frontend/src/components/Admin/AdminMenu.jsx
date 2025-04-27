@@ -211,10 +211,10 @@ const AdminMenu = () => {
   };
 
   return (
-    <div className="p-2 sm:p-6 bg-gray-100">
+    <div className="p-6 bg-gray-100">
       {statusMessage && (
         <div
-          className={`p-4 mb-4 text-white rounded-lg ${statusType === "success" ? "bg-green-500" : statusType === "info" ? "bg-blue-500" : "bg-red-500"}`}
+          className={`p-3 mb-4 text-white rounded-lg ${statusType === "success" ? "bg-green-500" : statusType === "info" ? "bg-blue-500" : "bg-red-500"}`}
         >
           {statusMessage}
         </div>
@@ -226,7 +226,7 @@ const AdminMenu = () => {
         )} */}
       </h3>
 
-      <div className="bg-white p-2 sm:p-4 rounded-lg shadow-md">
+      <div className="bg-white p-4 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-3">
           <h4 className="text-lg font-semibold">
             {isEditing ? "Edit Menu Item" : "Add New Item"}
@@ -262,6 +262,7 @@ const AdminMenu = () => {
             required
           >
             <option value="" disabled >Select Category *</option>
+            <option value="NonVeg">NonVeg</option>
             <option value="Drinks">Drinks</option>
             <option value="Food">Food</option>
             <option value="Desserts">Desserts</option>
@@ -298,7 +299,7 @@ const AdminMenu = () => {
             <option value="kg">kg</option>
             <option value="liters">liters</option>
             <option value="units">units</option>
-            <option value="pcs">pcs</option>
+            <option value="plates">plates</option>
             <option value="others">others</option>
           </select>
           <input
@@ -368,6 +369,15 @@ const AdminMenu = () => {
             >
               Desserts
             </button>
+
+            <button
+              onClick={() => handleCategoryChange("NonVeg")}
+              className={`mr-4 ${activeCategory === "NonVeg" ? "font-bold" : ""}`}
+            >
+              NonVeg
+            </button>
+
+
             <button
               onClick={() => handleCategoryChange("Others")}
               className={`mr-4 ${activeCategory === "Others" ? "font-bold" : ""}`}
@@ -375,9 +385,9 @@ const AdminMenu = () => {
               Others
             </button>
           </div>
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="flex flex-wrap gap-4">
             {getFilteredMenuItems().map((item) => (
-              <div key={item._id} className="bg-white p-4 rounded-lg shadow-md">
+              <div key={item._id} className="bg-white p-4 rounded-lg shadow-md w-48">
                 <img
                   src={item.image || PLACEHOLDER_IMAGE}
                   alt={item.name}
