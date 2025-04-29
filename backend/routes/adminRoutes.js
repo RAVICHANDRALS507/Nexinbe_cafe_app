@@ -24,9 +24,9 @@ router.post("/add", async (req, res) => {
       return res.status(400).json({ message: "Admin already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newAdmin = new Admin({ name, password: hashedPassword });
+    const newAdmin = new Admin({ name, password });
     await newAdmin.save();
+
     res.status(201).json({ message: "Admin added successfully" });
   } catch (error) {
     console.error("Error adding admin:", error);
