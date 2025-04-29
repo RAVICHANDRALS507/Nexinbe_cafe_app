@@ -30,6 +30,7 @@ const AdminMenu = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [itemAddedMessage, setItemAddedMessage] = useState(null); // State for item added message
+  const [loading, setLoading] = useState(false); // State for loading
 
   useEffect(() => {
     fetchMenuItems();
@@ -90,6 +91,7 @@ const AdminMenu = () => {
     try {
       setStatusMessage("Loading menu items...");
       setStatusType("info");
+      setLoading(true);
 
       const response = await fetch(`${BACKEND_URL}/api/menu`, {
         method: "GET",
@@ -115,6 +117,8 @@ const AdminMenu = () => {
       setStatusMessage("❌ Failed to fetch menu items. Please try again.");
       setStatusType("error");
       setShowMenu(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -210,111 +214,48 @@ const AdminMenu = () => {
     }
   };
 
-  return (
-    <div className="p-6 bg-gray-100">
-      {statusMessage && (
-        <div
-          className={`p-3 mb-4 text-white rounded-lg ${statusType === "success" ? "bg-green-500" : statusType === "info" ? "bg-blue-500" : "bg-red-500"}`}
-        >
-          {statusMessage}
-        </div>
-      )}
-      <h3 className="text-2xl font-bold mb-4 flex items-center justify-between">
-        <span>Menu Management</span>
-        {/* {itemAddedMessage && (
-          <span className="text-green-500 font-bold">{itemAddedMessage}</span>
-        )} */}
-      </h3>
+  const MenuItemSkeleton = () => (
+    <div className="min-w-[250px] bg-white rounded-lg shadow p-4 flex flex-col animate-pulse">
+      <div className="w-full h-40 bg-gray-300 rounded mb-2"></div>
+      <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+      <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
+      <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+    </div>
+  );
 
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-3">
-          <h4 className="text-lg font-semibold">
-            {isEditing ? "Edit Menu Item" : "Add New Item"}
-          </h4>
-          {itemAddedMessage && (
-            <span className="text-green-500 font-bold">{itemAddedMessage}</span>
-          )}
-        </div>
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="name"
-            value={newItem.name}
-            onChange={handleChange}
-            placeholder="Item Name *"
-            className="border p-2 rounded-lg w-full"
-            required
-          />
-          <input
-            type="text"
-            name="description"
-            value={newItem.description}
-            onChange={handleChange}
-            placeholder="Description *"
-            className="border p-2 rounded-lg w-full"
-            required
-          />
-          <select
-            name="category"
-            value={newItem.category}
-            onChange={handleChange}
-            className="border p-2 rounded-lg w-full"
-            required
-          >
-            <option value="" disabled >Select Category *</option>
-            <option value="NonVeg">NonVeg</option>
+  return (
+    <div className="p-4 sm:p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4">Manage Menu</h1>
+
+      {/* Add/Edit Form */}
+      <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+        <h2 className="text-lg font-semibold mb-2">{isEditing ? "Edit Item" : "Add New Item"}</h2>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input name="name" value={newItem.name} onChange={handleChange} placeholder="Item Name" className="border p-2 rounded" required />
+          <input name="description" value={newItem.description} onChange={handleChange} placeholder="Description" className="border p-2 rounded" required />
+          <select name="category" value={newItem.category} onChange={handleChange} className="border p-2 rounded" required>
+            <option value="" disabled>Select Category</option>
             <option value="Drinks">Drinks</option>
             <option value="Food">Food</option>
             <option value="Desserts">Desserts</option>
+            <option value="NonVeg">NonVeg</option>
             <option value="Others">Others</option>
           </select>
-          <input
-            type="number"
-            name="price"
-            value={newItem.price}
-            onChange={handleChange}
-            placeholder="Price *"
-            className="border p-2 rounded-lg w-full"
-            required
-            min="1"
-          />
-          <input
-            type="number"
-            name="quantity"
-            value={newItem.quantity}
-            onChange={handleChange}
-            placeholder="Quantity *"
-            className="border p-2 rounded-lg w-full"
-            required
-            min="1"
-          />
-          <select
-            name="unit"
-            value={newItem.unit}
-            onChange={handleChange}
-            className="border p-2 rounded-lg w-full"
-            required
-          >
-            <option value="" disabled>Units of Measurement *</option>
+          <input name="price" type="number" value={newItem.price} onChange={handleChange} placeholder="Price" className="border p-2 rounded" required />
+          <input name="quantity" type="number" value={newItem.quantity} onChange={handleChange} placeholder="Quantity" className="border p-2 rounded" required />
+          <select name="unit" value={newItem.unit} onChange={handleChange} className="border p-2 rounded" required>
+            <option value="" disabled>Select Unit</option>
             <option value="kg">kg</option>
             <option value="liters">liters</option>
             <option value="units">units</option>
             <option value="plates">plates</option>
             <option value="others">others</option>
           </select>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="border p-2 rounded-lg w-full"
-            required={!isEditing}
-          />
-          <div className="col-span-2 flex gap-4">
-            <button
-              type="submit"
-              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg w-full cursor-pointer hover:bg-blue-600"
-            >
-              {isEditing ? "Update Item" : "Add Item"}
+          <input type="file" accept="image/*" onChange={handleImageUpload} className="border p-2 rounded" required={!isEditing} />
+          {/* Buttons below file input, full width */}
+          <div className="col-span-1 md:col-span-2 flex flex-col gap-2 mt-2">
+            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
+              {isEditing ? "Update" : "Add"}
             </button>
             {isEditing && (
               <button
@@ -322,121 +263,50 @@ const AdminMenu = () => {
                 onClick={() => {
                   setIsEditing(false);
                   setEditingItem(null);
-                  setNewItem({
-                    name: "",
-                    description: "",
-                    category: "", // Changed from "Drinks" to empty string
-                    price: "",
-                    quantity: "",
-                    unit: "", // Changed from "units" to empty string
-                  });
+                  setNewItem({ name: "", description: "", category: "", price: "", quantity: "", unit: "" });
                 }}
-                className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg w-full cursor-pointer hover:bg-gray-600"
+                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 w-full"
               >
-                Cancel Edit
+                Cancel
               </button>
             )}
           </div>
         </form>
       </div>
 
-      {showMenu && (
-        <div className="mt-6">
-          <h4 className="text-lg font-semibold mb-3">Menu Items</h4>
-          {/* Category Filter */}
-          <div className="mb-4">
-            <button
-              onClick={() => handleCategoryChange("All")}
-              className={`mr-4 ${activeCategory === "All" ? "font-bold" : ""}`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => handleCategoryChange("Drinks")}
-              className={`mr-4 ${activeCategory === "Drinks" ? "font-bold" : ""}`}
-            >
-              Drinks
-            </button>
-            <button
-              onClick={() => handleCategoryChange("Food")}
-              className={`mr-4 ${activeCategory === "Food" ? "font-bold" : ""}`}
-            >
-              Food
-            </button>
-            <button
-              onClick={() => handleCategoryChange("Desserts")}
-              className={`mr-4 ${activeCategory === "Desserts" ? "font-bold" : ""}`}
-            >
-              Desserts
-            </button>
+      {/* Filter Buttons */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {["All", "Drinks", "Food", "Desserts", "NonVeg", "Others"].map((cat) => (
+          <button
+            key={cat}
+            onClick={() => handleCategoryChange(cat)}
+            className={`px-4 py-2 rounded-full border ${activeCategory === cat ? "bg-orange-500 text-white" : "bg-white text-gray-700 hover:bg-gray-100"}`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
 
-            <button
-              onClick={() => handleCategoryChange("NonVeg")}
-              className={`mr-4 ${activeCategory === "NonVeg" ? "font-bold" : ""}`}
-            >
-              NonVeg
-            </button>
-
-
-            <button
-              onClick={() => handleCategoryChange("Others")}
-              className={`mr-4 ${activeCategory === "Others" ? "font-bold" : ""}`}
-            >
-              Others
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-4">
-            {getFilteredMenuItems().map((item) => (
-              <div key={item._id} className="bg-white p-4 rounded-lg shadow-md w-48">
-                <img
-                  src={item.image || PLACEHOLDER_IMAGE}
-                  alt={item.name}
-                  className="w-full h-32 object-cover rounded-lg"
-                  onError={(e) => {
-                    e.target.onerror = null; // Prevent infinite loop
-                    e.target.src = PLACEHOLDER_IMAGE;
-                  }}
-                />
-                <div className="mt-2">
-                  <h5 className="font-semibold">{item.name}</h5>
-                  <p className="text-sm">{item.description}</p>
-                  <p className="font-bold">Rs {item.price}</p>
-                  <p className="text-sm text-gray-500">{item.category}</p>
-                  <p className="text-sm text-gray-500">
-                    {item.quantity} {item.unit}
-                  </p>
-                </div>
-                <div className="flex justify-between mt-4">
-                  <button
-                    onClick={() => handleEdit(item)}
-                    className="text-blue-500 hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Delete
-                  </button>
+      {/* Menu Items Display */}
+      <div className="flex flex-nowrap overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {loading
+          ? Array(6).fill().map((_, index) => <MenuItemSkeleton key={index} />)
+          : getFilteredMenuItems().map((item) => (
+              <div key={item._id} className="min-w-[250px] bg-white rounded-lg shadow p-4 flex flex-col">
+                <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} className="w-full h-40 object-cover rounded mb-2" />
+                <h3 className="text-lg font-semibold">{item.name}</h3>
+                <p className="text-gray-500 text-sm">{item.description}</p>
+                <p className="text-blue-500 font-bold mt-1">₹{item.price}</p>
+                <div className="flex gap-2 mt-3">
+                  <button onClick={() => handleEdit(item)} className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
+                  <button onClick={() => handleDelete(item._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+            ))
+        }
+      </div>
+
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </div>
   );
 };

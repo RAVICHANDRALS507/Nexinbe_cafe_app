@@ -235,7 +235,7 @@ const AdminDashboard = () => {
   return (
     <>
       {/* <AdminNavbar />  */}
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-2 sm:p-4 md:p-6 flex justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 sm:p-4 md:p-6 flex justify-center">
         <div className="w-full max-w-full sm:max-w-4xl md:max-w-6xl lg:max-w-7xl xl:max-w-screen-2xl 2xl:max-w-[1800px]">
           {/* Dashboard Header */}
           <div className="bg-white rounded-xl shadow-md mx-auto mb-4 sm:mb-8 px-4 sm:px-8 py-4">
@@ -244,7 +244,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 mx-auto mb-8 px-2 sm:px-4 md:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 mx-auto mb-8 sm:px-4 md:px-8">
             {/* Users Card */}
             <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all p-4 sm:p-6">
               <div className="flex items-center">
