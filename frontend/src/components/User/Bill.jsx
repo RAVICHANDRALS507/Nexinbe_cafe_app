@@ -1,10 +1,16 @@
-
+// src/components/User/Bill.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import html2canvas from "html2canvas";
-import Barcode from "react-barcode";
+import html2canvas from "html2canvas-pro";
+import QRCode from "react-qr-code";
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/Cartslice";
+
+// ✅ Backend API URL
+// const BACKEND_URL = "http://localhost:5000";
+// const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
 const Bill = () => {
   const navigate = useNavigate();
@@ -12,70 +18,70 @@ const Bill = () => {
   const billRef = useRef();
   const dispatch = useDispatch();
 
-  const [order, setOrder] = useState(null);
+  const [order, setOrder]       = useState(null);
+  const [userName, setUserName] = useState("");
 
+  // Load or create the order (persisting so refresh doesn’t change ID)
   useEffect(() => {
-    if (location.state && location.state.cartItems) {
-      setOrder({
-        _id: `ORD-${Math.floor(Math.random() * 10000)}`,
+    // If new order data is present, use it and update localStorage
+    if (location.state?.cartItems) {
+      const newOrder = {
+        _id: `ORD-${Date.now()}`,
         status: "Paid",
-        paymentId: "PAY123456789",
+        paymentId: `PAY-${Math.floor(Math.random() * 1000000)}`,
         createdAt: new Date().toISOString(),
         totalAmount: location.state.totalAmount || 0,
-        items: location.state.cartItems || [],
-      });
-    } else {
-      const storedOrder = localStorage.getItem("lastOrder");
-      if (storedOrder) {
-        setOrder(JSON.parse(storedOrder));
-        localStorage.removeItem("lastOrder");
-      }
+        items: location.state.cartItems,
+      };
+      setOrder(newOrder);
+      localStorage.setItem("lastOrder", JSON.stringify(newOrder));
+      return;
+    }
+    // Otherwise, fallback to lastOrder in localStorage
+    const stored = localStorage.getItem("lastOrder");
+    if (stored) {
+      setOrder(JSON.parse(stored));
     }
   }, [location.state]);
 
-  const clearCart = () => localStorage.removeItem("cartItems");
+  // Fetch logged-in user’s name
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    axios
+      .get(`${BACKEND_URL}/api/auth/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(res => setUserName(res.data.name))
+      .catch(() => setUserName(""));
+  }, []);
 
-  const handleDownload = () => {
-    if (!billRef.current) return;
-  
-    const clonedNode = billRef.current.cloneNode(true);
-    clonedNode.classList.add("print-safe");
-    document.body.appendChild(clonedNode); // temporarily attach it
-  
-    html2canvas(clonedNode, {
-      logging: true,
-      useCORS: true,
-      scale: 2,
-    })
-      .then((canvas) => {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = "order-bill.png";
-        link.click();
-      })
-      .catch((error) => {
-        console.error("Error generating PNG:", error);
-      })
-      .finally(() => {
-        document.body.removeChild(clonedNode); // cleanup
-      });
+  const clearCart = () => {
+    localStorage.removeItem("cartItems");
+    localStorage.removeItem("lastOrder");
   };
-  
-  
-  
+
+  const handleDownload = async () => {
+    if (!billRef.current) return;
+    const clone = billRef.current.cloneNode(true);
+    clone.classList.add("print-safe");
+    document.body.appendChild(clone);
+    try {
+      const canvas = await html2canvas(clone, { useCORS: true, scale: 3 });
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "nexinbe-order-bill.png";
+      link.click();
+    } finally {
+      document.body.removeChild(clone);
+    }
+  };
 
   const handleReorder = () => {
-    if (order && order.items) {
-      order.items.forEach((item) => {
-        dispatch(
-          addToCart({
-            ...item,
-            id: item.id || item._id,
-          })
-        );
-      });
-      navigate("/cart");
-    }
+    order.items.forEach(item =>
+      dispatch(addToCart({ ...item, id: item.id || item._id }))
+    );
+    navigate("/cart");
   };
 
   const handleBackToHome = () => {
@@ -83,7 +89,7 @@ const Bill = () => {
     navigate("/");
   };
 
-  const handleTrackOrder = () => navigate("/order");
+  const handleTrackOrder = () => navigate("/order-tracking");
 
   if (!order) {
     return (
@@ -99,33 +105,42 @@ const Bill = () => {
     );
   }
 
+  // Data-rich QR payload now includes paymentId & createdAt
+  const qrData = JSON.stringify({
+    orderId:   order._id,
+    paymentId: order.paymentId,
+    date:      order.createdAt,
+    total:     order.totalAmount,
+    items:     order.items.map(i => ({ name: i.name, qty: i.quantity }))
+  });
+
   return (
     <div className="min-h-screen pt-20 bg-gray-100 px-4 font-mono">
+      {/* Bill Card */}
       <div
         ref={billRef}
         className="p-4 sm:p-6 w-full max-w-md mx-auto bg-white shadow-xl rounded border border-gray-300"
       >
-        {/* Header */}
         <h2 className="text-xl font-bold text-center mb-1">Nexinbe Cafe</h2>
-        <p className="text-center text-sm mb-4">Thank you for your order!</p>
+        <p className="text-center text-sm mb-4">
+          🙏 Thank you
+          {userName && <> , <span className="font-semibold">{userName}</span></>}
+          !
+        </p>
 
-        {/* Order Info */}
         <div className="space-y-1 text-sm border-b border-gray-300 pb-2">
           <p><strong>Order ID:</strong> {order._id}</p>
-          <p><strong>Status:</strong>  {order.status}</p>
+          <p><strong>Status:</strong> {order.status}</p>
           <p><strong>Payment ID:</strong> {order.paymentId}</p>
           <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}</p>
         </div>
 
-        {/* Items */}
         <div className="mt-4 border-b border-gray-300 pb-2">
-          <div className="grid grid-cols-3 font-semibold border-b border-gray-300 mb-1">
-            <p>Item</p>
-            <p className="text-center">Qty</p>
-            <p className="text-right">Price</p>
+          <div className="grid grid-cols-3 font-semibold border-b mb-1">
+            <p>Item</p><p className="text-center">Qty</p><p className="text-right">Price</p>
           </div>
-          {order.items.map((item, i) => (
-            <div key={i} className="grid grid-cols-3 text-sm py-1">
+          {order.items.map((item, idx) => (
+            <div key={idx} className="grid grid-cols-3 text-sm py-1">
               <p className="capitalize">{item.name}</p>
               <p className="text-center">{item.quantity}</p>
               <p className="text-right">₹{item.price}</p>
@@ -133,55 +148,28 @@ const Bill = () => {
           ))}
         </div>
 
-        {/* Total */}
         <p className="text-right font-bold text-lg mt-2">
           Total: ₹{order.totalAmount.toFixed(2)}
         </p>
 
-        {/* Barcode */}
+        {/* Clickable, Data-Rich QR */}
         <div className="mt-6 flex justify-center">
-          <Barcode
-            value={order._id}
-            format="CODE128"
-            height={60}
-            displayValue={true}
-            background="#ffffff"
-            lineColor="#000000"
-          />
+          <a href={`/order-tracking?orderId=${order._id}`} target="_blank" rel="noopener noreferrer">
+            <QRCode value={qrData} size={128} level="H" />
+          </a>
         </div>
 
-        {/* Footer */}
         <p className="text-center text-xs text-gray-500 mt-4">
           This is a computer-generated receipt.
         </p>
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-6 flex flex-wrap justify-center gap-3 text-center px-4 font-sans">
-        <button
-          onClick={handleDownload}
-          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition w-full sm:w-auto shadow-md"
-        >
-          Download PNG
-        </button>
-        <button
-          onClick={handleReorder}
-          className="bg-orange-400 text-white px-4 py-2 rounded-lg hover:bg-orange-500 transition w-full sm:w-auto shadow-md"
-        >
-          Reorder
-        </button>
-        <button
-          onClick={handleTrackOrder}
-          className="bg-orange-300 text-white px-4 py-2 rounded-lg hover:bg-orange-400 transition w-full sm:w-auto shadow-md"
-        >
-          Track Order
-        </button>
-        <button
-          onClick={handleBackToHome}
-          className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition w-full sm:w-auto shadow-md"
-        >
-          🔙 Back to Home
-        </button>
+      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 px-4">
+        <button onClick={handleDownload} className="bg-orange-500 text-white px-4 py-2 rounded-lg">📥 Download PNG</button>
+        <button onClick={handleReorder} className="bg-orange-400 text-white px-4 py-2 rounded-lg">🔄 Reorder</button>
+        <button onClick={handleTrackOrder} className="bg-orange-300 text-white px-4 py-2 rounded-lg">🚚 Track Order</button>
+        <button onClick={handleBackToHome} className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">🏠 Back to Home</button>
       </div>
     </div>
   );

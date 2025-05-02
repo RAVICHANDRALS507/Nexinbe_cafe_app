@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 const { registerUser, loginUser } = require("../controllers/userController");
 const User = require("../models/User"); // Import your User model
+const Order = require('../models/Order');
 
 // Register User Route
 router.post("/register", registerUser);
@@ -32,6 +33,16 @@ router.get("/profile", async (req, res) => {
   } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get('/orders', async (req, res) => {
+  try {
+    const userId = req.user.id; // assuming auth middleware sets req.user
+    const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch orders' });
   }
 });
 

@@ -72,9 +72,16 @@ const Menu = () => {
       return;
     }
     toast.info(`${item.name} has been ordered! Proceeding to checkout.`);
+    const quantity = cartQuantities[item._id] || 1;
     navigate('/payment', {
       state: {
-        amount: item.price * (cartQuantities[item._id] || 1),
+        amount: item.price * quantity,
+        cartItems: [
+          {
+            ...item,
+            quantity,
+          },
+        ],
       },
     });
   };
@@ -162,7 +169,7 @@ const Menu = () => {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 px-1 mb-8">
             {loading ? (
-              Array(8)
+              Array(10)
                 .fill()
                 .map((_, index) => <MenuItemSkeleton key={index} />)
             ) : filteredItems.length > 0 ? (

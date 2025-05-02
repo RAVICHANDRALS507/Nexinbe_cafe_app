@@ -18,7 +18,7 @@ const InactivityTimeout = () => {
   };
 
   // Inactivity timer (1 minute = 60000ms)
-  const INACTIVITY_TIMEOUT = 1 * 60 * 1000;
+  const INACTIVITY_TIMEOUT = 5 * 60 * 1000;
 
   useEffect(() => {
     // Only set up inactivity timer if user is not an admin

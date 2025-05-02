@@ -2,6 +2,8 @@ const express = require("express");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const router = express.Router();
+const Order = require('../models/Order');
+const User = require('../models/User');
 
 // Validate environment variables
 if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
@@ -71,10 +73,10 @@ router.post("/checkout", async (req, res) => {
 // Route to verify payment signature
 router.post("/paymentVerification", async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, cartItems, totalAmount, userId } = req.body;
 
     // Input validation
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !userId || !cartItems || !totalAmount) {
       return res.status(400).json({
         success: false,
         message: "Missing required payment verification parameters"
@@ -107,19 +109,42 @@ router.post("/paymentVerification", async (req, res) => {
       });
     }
 
-    // Payment is successful and verified
+    // Fetch user details
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Get current date and time
+    const now = new Date();
+    const date = now.toLocaleDateString("en-GB").split("/").map((part) => part.padStart(2, "0")).join("/");
+    const time = now.toLocaleTimeString("en-GB", { hour12: false }).padStart(8, "0");
+
+    // Save order in DB
+    const order = new Order({
+      user: user._id,
+      userName: user.name,
+      orderId: razorpay_order_id,
+      paymentStatus: "Paid",
+      paymentId: razorpay_payment_id,
+      date,
+      time,
+      items: cartItems.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      total: totalAmount,
+      orderStatus: "Processing"
+    });
+    await order.save();
+
     return res.status(200).json({
       success: true,
-      message: "Payment verified successfully!",
+      message: "Payment verified and order saved successfully!",
       orderId: razorpay_order_id,
       paymentId: razorpay_payment_id,
-      paymentDetails: {
-        amount: payment.amount / 100, // Convert back to rupees
-        currency: payment.currency,
-        status: payment.status,
-        method: payment.method,
-        createdAt: payment.created_at
-      }
+      orderDbId: order._id
     });
 
   } catch (error) {
