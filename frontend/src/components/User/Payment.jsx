@@ -4,6 +4,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart } from '../../redux/Cartslice';
 
+// ✅ Backend API URL
+//const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
 const Payment = () => {
@@ -56,7 +59,16 @@ const Payment = () => {
         handler: async function (response) {
           try {
             const token = localStorage.getItem("token");
-            const userId = JSON.parse(atob(token.split('.')[1])).userId; // decode JWT to get userId
+            const userId = JSON.parse(atob(token.split('.')[1])).userId;
+
+            console.log({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              cartItems: location.state?.cartItems || cartItems,
+              totalAmount: amount,
+              userId,
+            });
 
             const verifyRes = await axios.post(`${BACKEND_URL}/api/razorpay/paymentVerification`, {
               razorpay_payment_id: response.razorpay_payment_id,
@@ -71,13 +83,15 @@ const Payment = () => {
               dispatch(clearCart());
               alert(verifyRes.data.message || "Payment successful!");
 
-              // Always pass cartItems to Bill page
+              // Pass real orderId and paymentId to Bill page
               navigate('/bill', {
                 replace: true,
                 state: {
                   cartItems: location.state?.cartItems || cartItems,
                   totalAmount: amount,
-                  tableNumber,
+                  orderId: verifyRes.data.orderId,         // <-- from backend
+                  paymentId: verifyRes.data.paymentId,     // <-- from backend
+                  orderDbId: verifyRes.data.orderDbId,     // <-- MongoDB _id if needed
                 },
               });
             } else {

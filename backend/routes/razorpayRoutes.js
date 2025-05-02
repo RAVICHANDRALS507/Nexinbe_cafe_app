@@ -77,6 +77,7 @@ router.post("/paymentVerification", async (req, res) => {
 
     // Input validation
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !userId || !cartItems || !totalAmount) {
+      console.error("Missing fields:", { razorpay_order_id, razorpay_payment_id, razorpay_signature, cartItems, totalAmount, userId });
       return res.status(400).json({
         success: false,
         message: "Missing required payment verification parameters"

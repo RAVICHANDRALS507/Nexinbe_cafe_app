@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const multer = require("multer");
 
-
 const adminRoutes = require("./routes/adminRoutes");
 const menuRoutes = require("./routes/menuRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -12,6 +11,11 @@ const razorpayRoutes = require("./routes/razorpayRoutes");
 
 const app = express();
 const upload = multer(); 
+const bodyParser = require('body-parser'); // <-- Add this line
+
+// Increase payload limit to 10mb (adjust as needed)
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 //  Enable CORS
 app.use(cors({
@@ -51,7 +55,7 @@ app.use((err, req, res, next) => {
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 //  Default Route
 app.get("/", (req, res) => {

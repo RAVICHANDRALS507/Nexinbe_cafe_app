@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
+const Order = require("../models/Order");
 const router = express.Router();
 const { adminLogin, getUserStats } = require("../controllers/adminController");
 
@@ -95,6 +96,37 @@ router.post('/verify-password', async (req, res) => {
   } catch (error) {
     console.error('Error verifying password:', error);
     res.status(500).json({ message: 'Failed to verify password' });
+  }
+});
+
+// Fetch all orders
+router.get("/orders", async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Failed to fetch orders" });
+  }
+});
+
+// Update order status
+router.put("/orders/:orderId/status", async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { orderId } = req.params;
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus: status },
+      { new: true }
+    );
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json({ message: "Order status updated", order });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ message: "Failed to update order status" });
   }
 });
 

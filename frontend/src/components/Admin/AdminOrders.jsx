@@ -14,7 +14,10 @@ import {
 import { toast, ToastContainer } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css"; 
  
-const BACKEND_URL = "http://localhost:5000"; 
+// ✅ Backend API URL
+//const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
  
 const AdminOrders = () => { 
   const [orders, setOrders] = useState([]); 
@@ -41,26 +44,24 @@ const AdminOrders = () => {
     } 
   }; 
  
-  const handleStatusUpdate = async (orderId, newStatus) => { 
-    try { 
-      const response = await fetch(`${BACKEND_URL}/api/admin/orders/${orderId}/status`, { 
-        method: "PUT", 
-        headers: { 
-          "Content-Type": "application/json", 
-        }, 
-        body: JSON.stringify({ status: newStatus }), 
-      }); 
- 
-      if (response.ok) { 
-        toast.success("Order status updated successfully"); 
-        fetchOrders(); 
-      } else { 
-        throw new Error("Failed to update status"); 
-      } 
-    } catch (error) { 
-      toast.error("Failed to update order status"); 
-    } 
-  }; 
+  const handleStatusUpdate = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/admin/orders/${orderId}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        toast.success("Order status updated successfully");
+        fetchOrders(); // Refresh the list
+      } else {
+        throw new Error("Failed to update status");
+      }
+    } catch (error) {
+      toast.error("Failed to update order status");
+    }
+  };
  
   const filteredOrders = orders 
     .filter(order => { 
@@ -251,9 +252,45 @@ orange-500"></div>
           </div> 
         ) : ( 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> 
-            {filteredOrders.map((order) => ( 
-              <OrderCard key={order._id} order={order} /> 
-            ))} 
+            {orders.map((order) => (
+              <div key={order._id} className="bg-white rounded-xl shadow-lg p-5 mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <div>
+                    <h3 className="font-semibold text-gray-800">Order #{order.orderId}</h3>
+                    <p className="text-sm text-gray-500">{order.userName}</p>
+                    <p className="text-xs text-gray-400">{order.date} {order.time}</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    order.orderStatus === 'Delivered'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {order.orderStatus}
+                  </span>
+                </div>
+                <div>
+                  <ul className="mb-2">
+                    {order.items.map((item, idx) => (
+                      <li key={idx} className="text-sm">
+                        {item.name} x {item.quantity} - ₹{item.price}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex justify-between">
+                    <span className="font-bold">Total:</span>
+                    <span className="font-bold text-orange-500">₹{order.total.toFixed(2)}</span>
+                  </div>
+                </div>
+                {order.orderStatus === "Processing" && (
+                  <button
+                    className="mt-3 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                    onClick={() => handleStatusUpdate(order._id, "Delivered")}
+                  >
+                    Mark as Delivered
+                  </button>
+                )}
+              </div>
+            ))}
           </div> 
         )} 
  
@@ -276,4 +313,4 @@ orange-500"></div>
   ); 
 }; 
  
-export default AdminOrders; 
+export default AdminOrders;

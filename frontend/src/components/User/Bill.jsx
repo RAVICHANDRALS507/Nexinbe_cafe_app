@@ -8,8 +8,8 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/Cartslice";
 
 // ✅ Backend API URL
-// const BACKEND_URL = "http://localhost:5000";
-// const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
+//const BACKEND_URL = "http://localhost:5000";
+//const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
 const Bill = () => {
@@ -23,12 +23,12 @@ const Bill = () => {
 
   // Load or create the order (persisting so refresh doesn’t change ID)
   useEffect(() => {
-    // If new order data is present, use it and update localStorage
     if (location.state?.cartItems) {
       const newOrder = {
-        _id: `ORD-${Date.now()}`,
+        _id: location.state.orderDbId || `ORD-${Date.now()}`,
+        orderId: location.state.orderId || "",
         status: "Paid",
-        paymentId: `PAY-${Math.floor(Math.random() * 1000000)}`,
+        paymentId: location.state.paymentId || "",
         createdAt: new Date().toISOString(),
         totalAmount: location.state.totalAmount || 0,
         items: location.state.cartItems,
