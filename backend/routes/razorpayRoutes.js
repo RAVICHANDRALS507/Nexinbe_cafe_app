@@ -118,8 +118,10 @@ router.post("/paymentVerification", async (req, res) => {
 
     // Get current date and time
     const now = new Date();
-    const date = now.toLocaleDateString("en-GB").split("/").map((part) => part.padStart(2, "0")).join("/");
-    const time = now.toLocaleTimeString("en-GB", { hour12: false }).padStart(8, "0");
+    // Format date as DD/MM/YYYY
+    const date = now.toLocaleDateString("en-GB"); // e.g., "27/04/2024"
+    // Format time as HH:MM:SS (24h)
+    const time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
 
     // Save order in DB
     const order = new Order({

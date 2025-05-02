@@ -25,7 +25,7 @@ const AdminOrders = () => {
   const [searchTerm, setSearchTerm] = useState(""); 
   const [statusFilter, setStatusFilter] = useState("all"); 
   const [sortField, setSortField] = useState("date"); 
-  const [sortDirection, setSortDirection] = useState("desc"); 
+  const [sortDirection, setSortDirection] = useState("asc"); // Oldest first
   const [selectedOrder, setSelectedOrder] = useState(null); 
  
   useEffect(() => { 
@@ -65,12 +65,14 @@ const AdminOrders = () => {
  
   const filteredOrders = orders 
     .filter(order => { 
-      const matchesSearch = 
-order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          order.orderId.toLowerCase().includes(searchTerm.toLowerCase()); 
-      const matchesStatus = statusFilter === "all" || order.status === statusFilter; 
-      return matchesSearch && matchesStatus; 
-    }) 
+      const userName = order.userName || "";
+      const orderId = order.orderId || "";
+      const matchesSearch =
+        userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        orderId.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus = statusFilter === "all" || order.orderStatus === statusFilter;
+      return matchesSearch && matchesStatus;
+    })
     .sort((a, b) => { 
       const direction = sortDirection === "asc" ? 1 : -1; 
       if (sortField === "date") { 
@@ -252,13 +254,25 @@ orange-500"></div>
           </div> 
         ) : ( 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> 
-            {orders.map((order) => (
+            {filteredOrders.map((order) => ( // <-- use filteredOrders here
               <div key={order._id} className="bg-white rounded-xl shadow-lg p-5 mb-4">
                 <div className="flex justify-between items-center mb-2">
                   <div>
                     <h3 className="font-semibold text-gray-800">Order #{order.orderId}</h3>
                     <p className="text-sm text-gray-500">{order.userName}</p>
-                    <p className="text-xs text-gray-400">{order.date} {order.time}</p>
+                    <p className="text-xs text-gray-400">
+                      {order.date}{" "}
+                      {order.time
+                        ? new Date(`1970-01-01T${order.time}`).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })
+                        : ""}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      <strong>Payment ID:</strong> {order.paymentId}
+                    </p>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                     order.orderStatus === 'Delivered'
