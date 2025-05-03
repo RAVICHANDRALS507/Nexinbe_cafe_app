@@ -15,6 +15,7 @@ import Bill from "./components/User/Bill";
 import InactivityTimeout from "./components/InactivityTimeout"; 
 import { ToastContainer, toast } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css"; 
+import Order from "./components/User/Order";
 
 
 // ProtectedRoute component for user auth 
@@ -128,9 +129,7 @@ function App() {
           path="/order-tracking"  
           element={ 
             <ProtectedRoute> 
-              <div className="p-4 text-center"> 
-                Order Tracking Page (To be implemented) 
-              </div> 
+              <Order /> 
             </ProtectedRoute> 
           }  
         /> 

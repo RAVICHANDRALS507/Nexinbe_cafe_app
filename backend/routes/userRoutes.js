@@ -38,7 +38,14 @@ router.get("/profile", async (req, res) => {
 
 router.get('/orders', async (req, res) => {
   try {
-    const userId = req.user.id; // assuming auth middleware sets req.user
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
     const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {

@@ -4,7 +4,7 @@ import Navbar from '../Navbar';
 import UserNavbar from './UserNavbar'; // Import the UserNavbar component
 
 // ✅ Backend API URL
-//const BACKEND_URL = "http://localhost:5000";
+// const BACKEND_URL = "http://localhost:5000";
 //const BACKEND_URL = "https://nexinbe-cafe-app-git-main-ravichandra-l-ss-projects.vercel.app";
 const BACKEND_URL = "https://nexinbe-cafe-app.vercel.app";
 
